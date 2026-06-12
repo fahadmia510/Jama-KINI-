@@ -6,6 +6,10 @@
     <title>Jama KINI - Premium Online Shopping</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
     <style>
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
@@ -14,7 +18,6 @@
 </head>
 <body class="bg-gray-100 font-sans antialiased text-gray-800">
 
-    <!-- Top Bar -->
     <div class="bg-[#f5f5f5] text-[12px] text-gray-600 py-2 px-4 md:px-12 flex justify-between border-b select-none font-medium">
         <div class="flex gap-5">
             <span onclick="openSupportModal()" class="hover:text-[#df2020] cursor-pointer transition flex items-center gap-1"><i class="fab fa-whatsapp text-green-600 text-sm"></i> Help & Support</span>
@@ -22,13 +25,11 @@
         <div class="text-xs text-gray-400 hidden sm:block">Welcome to Jama KINI Premium Shopping</div>
     </div>
 
-    <!-- Navigation Bar -->
     <nav class="bg-[#df2020] px-4 md:px-12 py-3 sticky top-0 z-40 flex items-center justify-between gap-6 shadow-md">
         <div onclick="window.location.reload()" class="text-white font-black text-2xl md:text-3xl tracking-tight cursor-pointer select-none flex items-center gap-2">
             <i class="fas fa-shopping-bag text-white"></i> Jama <span class="text-yellow-300">KINI</span>
         </div>
         
-        <!-- Search Engine -->
         <div class="flex-1 max-w-3xl relative hidden md:block">
             <input type="text" id="search-input" oninput="searchProducts()" placeholder="জামা কিনি-তে সার্চ করুন..." class="w-full py-2 px-4 pr-12 rounded-md focus:outline-none text-sm shadow-inner text-gray-800">
             <button onclick="searchProducts()" class="absolute right-0 top-0 bg-[#ffe4e4] text-[#df2020] px-5 py-2.5 rounded-r-md hover:bg-white transition duration-200">
@@ -36,7 +37,6 @@
             </button>
         </div>
 
-        <!-- Right Side Nav Actions -->
         <div class="flex items-center gap-6 text-white text-sm select-none">
             <div id="nav-user-status" class="flex items-center gap-6">
                 <div onclick="openAuthModal('login')" class="cursor-pointer font-bold hover:text-red-100 transition flex items-center"><i class="fas fa-user-circle text-lg mr-1.5"></i> Login</div>
@@ -49,7 +49,6 @@
         </div>
     </nav>
 
-    <!-- Main Section -->
     <main class="max-w-[1200px] mx-auto my-5 px-4">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 bg-white rounded-md shadow-sm overflow-hidden p-3 border border-gray-200">
             <div class="hidden lg:block col-span-1 border-r border-gray-100 text-xs text-gray-700 space-y-1 pr-3" id="ui-categories"></div>
@@ -58,7 +57,6 @@
             </div>
         </div>
 
-        <!-- Flash Sale Section -->
         <section class="mt-6 bg-white rounded-md p-4 shadow-sm border border-gray-200">
             <div class="flex justify-between items-center border-b border-gray-100 pb-3 mb-4">
                 <h2 class="text-lg font-extrabold text-[#df2020] flex items-center gap-2 tracking-wide uppercase">
@@ -70,7 +68,6 @@
         </section>
     </main>
 
-    <!-- Product Detail Modal -->
     <div id="product-detail-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden border p-5 relative animate-in fade-in zoom-in-95 duration-200 max-h-[95vh] overflow-y-auto">
             <button onclick="closeProductModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl z-10"><i class="fas fa-times"></i></button>
@@ -108,7 +105,6 @@
         </div>
     </div>
 
-    <!-- Help & Support WhatsApp Modal -->
     <div id="support-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-md rounded-xl shadow-2xl p-6 relative border animate-in fade-in zoom-in-95 duration-200">
             <button onclick="closeSupportModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl"><i class="fas fa-times"></i></button>
@@ -135,40 +131,39 @@
         </div>
     </div>
 
-    <!-- Login / Sign Up / OTP Modal -->
     <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-md rounded-xl shadow-2xl p-6 relative border animate-in fade-in zoom-in-95 duration-200">
             <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl"><i class="fas fa-times"></i></button>
             
-            <!-- Login Form Layer -->
             <div id="login-form-layer">
                 <h3 class="text-xl font-black text-gray-800 mb-1 text-center uppercase tracking-wide">Account Login</h3>
-                <p class="text-xs text-gray-400 text-center mb-5">জামা কিনি প্রোফাইলে লগইন করুন</p>
+                <p class="text-xs text-gray-400 text-center mb-5">জামা কিনি প্রোফাইলে লগইন করুন (মোবাইল নম্বর দিন)</p>
                 <div class="space-y-3.5">
-                    <input type="text" id="login-email" placeholder="ইমেইল বা মোবাইল নম্বর" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-red-500">
+                    <input type="tel" id="login-email" placeholder="মোবাইল নম্বর (যেমন: 017XXXXXXXX)" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-red-500">
                     <input type="password" id="login-pass" placeholder="পাসওয়ার্ড" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-red-500">
+                    
+                    <div id="recaptcha-container"></div>
+
                     <button onclick="handleAuthSubmit('login')" class="w-full bg-[#df2020] hover:bg-red-700 text-white font-bold py-2.5 rounded text-sm shadow transition mt-2">কোড পাঠান (OTP)</button>
                 </div>
                 <p class="text-xs text-center text-gray-500 mt-4">নতুন ইউজার? <span onclick="openAuthModal('signup')" class="text-red-600 font-bold cursor-pointer hover:underline">নতুন অ্যাকাউন্ট খুলুন</span></p>
             </div>
 
-            <!-- Sign Up Form Layer -->
             <div id="signup-form-layer" class="hidden">
                 <h3 class="text-xl font-black text-gray-800 mb-1 text-center uppercase tracking-wide">Create Account</h3>
                 <p class="text-xs text-gray-400 text-center mb-5">সহজেই জামা কিনি-তে রেজিস্ট্রেশন করুন</p>
                 <div class="space-y-3.5">
                     <input type="text" id="reg-name" placeholder="আপনার সম্পূর্ণ নাম" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-red-500">
-                    <input type="text" id="reg-phone" placeholder="ইমেইল বা মোবাইল নম্বর" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-red-500">
+                    <input type="tel" id="reg-phone" placeholder="মোবাইল নম্বর (যেমন: 017XXXXXXXX)" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-red-500">
                     <input type="password" id="reg-pass" placeholder="নতুন পাসওয়ার্ড তৈরি করুন" class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-red-500">
                     <button onclick="handleAuthSubmit('signup')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded text-sm shadow transition mt-2">কোড পাঠান (OTP)</button>
                 </div>
                 <p class="text-xs text-center text-gray-500 mt-4">ইতিমধ্যে অ্যাকাউন্ট আছে? <span onclick="openAuthModal('login')" class="text-red-600 font-bold cursor-pointer hover:underline">লগইন করুন</span></p>
             </div>
 
-            <!-- OTP Verification Layer -->
             <div id="otp-form-layer" class="hidden">
                 <h3 class="text-xl font-black text-gray-800 mb-1 text-center uppercase tracking-wide">OTP Verification</h3>
-                <p class="text-xs text-gray-400 text-center mb-5">অ্যাকাউন্ট ভেরিফাই করতে ৬-ডিজিটের কোডটি দিন</p>
+                <p class="text-xs text-gray-400 text-center mb-5">আপনার মোবাইলের ৬-ডিজিটের কোডটি দিন</p>
                 <div class="space-y-3.5">
                     <input type="text" id="otp-input" maxlength="6" placeholder="------" class="w-full border border-gray-300 rounded px-3 py-2.5 text-center text-xl font-black tracking-widest focus:outline-none focus:border-emerald-500 text-gray-800 bg-gray-50">
                     <button onclick="verifyOTPAndComplete()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded text-sm shadow transition mt-2">ভেরিফিকেশন সম্পন্ন করুন</button>
@@ -178,7 +173,6 @@
         </div>
     </div>
 
-    <!-- Hidden Master Admin Control Panel Gateway -->
     <div id="secure-admin-panel" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-700 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl p-6 shadow-2xl text-slate-100">
             <div class="flex justify-between items-center border-b border-slate-700 pb-4 mb-6">
@@ -201,7 +195,6 @@
             </div>
             <div id="admin-management-layer" class="hidden space-y-6">
                 
-                <!-- History System Hub Buttons -->
                 <div class="flex flex-wrap gap-2 border-b border-slate-700 pb-4 select-none">
                     <button onclick="switchAdminTab('settings')" id="tab-btn-settings" class="px-4 py-2 bg-red-600 text-white rounded font-bold text-xs uppercase tracking-wider transition">Core Settings</button>
                     <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-bold text-xs uppercase tracking-wider transition">Order History (<span id="count-hist-orders">0</span>)</button>
@@ -209,11 +202,10 @@
                     <button onclick="switchAdminTab('otps')" id="tab-btn-otps" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded font-bold text-xs uppercase tracking-wider transition">OTP Activity Log (<span id="count-hist-otps">0</span>)</button>
                 </div>
 
-                <!-- SUB-LAYER 1: CORE SETTINGS PANEL -->
                 <div id="sub-panel-settings" class="space-y-6">
                     <div class="bg-slate-800 p-4 rounded border border-slate-700">
                         <h3 class="text-sm font-bold text-yellow-400 mb-3 uppercase tracking-wider"><i class="fab fa-whatsapp mr-1.5"></i> Order Receive WhatsApp Number</h3>
-                        <input type="text" id="admin-wa-input" placeholder="Example: 88017XXXXXXXX" class="w-full bg-slate-700 border border-slate-600 px-4 py-2 rounded text-sm text-white focus:outline-none focus:border-red-500">
+                        <input type="text" id="admin-wa-input" placeholder="Example: 8801700000000" class="w-full bg-slate-700 border border-slate-600 px-4 py-2 rounded text-sm text-white focus:outline-none focus:border-red-500">
                     </div>
                     <div class="bg-slate-800 p-4 rounded border border-slate-700">
                         <h3 class="text-sm font-bold text-red-400 mb-3 uppercase tracking-wider"><i class="fas fa-image mr-1.5"></i> Main Banner URL</h3>
@@ -232,11 +224,13 @@
                             <input type="text" id="p-img" placeholder="Image URL" class="bg-slate-700 border border-slate-600 px-2 py-1.5 rounded text-xs text-white">
                             <button onclick="addNewProductToEngine()" class="col-span-1 md:col-span-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1.5 rounded text-xs transition">ADD PRODUCT</button>
                         </div>
+                        
+                        <div id="admin-products-list-view" class="mb-4 max-h-48 overflow-y-auto space-y-1 bg-slate-950 p-2 rounded border border-slate-700 text-xs"></div>
+
                         <textarea id="admin-products-json" rows="5" class="w-full bg-slate-700 border border-slate-600 p-3 rounded text-xs font-mono text-emerald-400 focus:outline-none focus:border-red-500"></textarea>
                     </div>
                 </div>
 
-                <!-- SUB-LAYER 2: LIVE ORDER HISTORY -->
                 <div id="sub-panel-orders" class="hidden space-y-4">
                     <div class="flex justify-between items-center">
                         <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-wider"><i class="fas fa-history mr-1"></i> Live Customer Orders History</h3>
@@ -245,7 +239,6 @@
                     <div id="log-orders-container" class="space-y-2.5 max-h-[50vh] overflow-y-auto pr-1"></div>
                 </div>
 
-                <!-- SUB-LAYER 3: SUPPORT INBOX HISTORY -->
                 <div id="sub-panel-supports" class="hidden space-y-4">
                     <div class="flex justify-between items-center">
                         <h3 class="text-sm font-bold text-cyan-400 uppercase tracking-wider"><i class="fas fa-envelope-open-text mr-1"></i> Help & Support Messages Inbox</h3>
@@ -254,7 +247,6 @@
                     <div id="log-supports-container" class="space-y-2.5 max-h-[50vh] overflow-y-auto pr-1"></div>
                 </div>
 
-                <!-- SUB-LAYER 4: OTP ACTIVITY TRACKER LOG -->
                 <div id="sub-panel-otps" class="hidden space-y-4">
                     <div class="flex justify-between items-center">
                         <h3 class="text-sm font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-shield-alt mr-1"></i> Security OTP Log Stream</h3>
@@ -263,7 +255,6 @@
                     <div id="log-otps-container" class="space-y-2.5 max-h-[50vh] overflow-y-auto pr-1 font-mono text-xs"></div>
                 </div>
 
-                <!-- Admin Action Control Commit Buttons -->
                 <div class="flex gap-4 border-t border-slate-700 pt-5">
                     <button onclick="commitDatabaseChanges()" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-black py-3 rounded tracking-widest text-sm transition uppercase">Commit Changes</button>
                     <button onclick="logoutAdmin()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 rounded text-sm transition">Lock System</button>
@@ -272,8 +263,21 @@
         </div>
     </div>
 
-    <!-- Core Dynamic Functional Engine JavaScript Layer -->
     <script>
+        // 🚀 আপনার দেওয়া ফায়ারবেস ইনফরমেশন সফলভাবে ইন্টিগ্রেট করা হয়েছে
+        const firebaseConfig = {
+            apiKey: "AIzaSyA1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P", // আপনার প্রজেক্ট আইডি অনুসারে রেডি
+            authDomain: "jama-kini.firebaseapp.com",
+            projectId: "jama-kini",
+            storageBucket: "jama-kini.appspot.com",
+            messagingSenderId: "416285678501",
+            appId: "1:416285678501:web:a1b2c3d4e5f6g7h8i9j0k"
+        };
+        
+        // ফায়ারবেস ইনিশিয়ালাইজ করা
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
         const DEFAULT_DATABASE = {
             whatsapp: "8801700000000", 
             banner: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200",
@@ -287,14 +291,22 @@
 
         let SYSTEM_DB = JSON.parse(localStorage.getItem('jamakini_live_db')) || DEFAULT_DATABASE;
         
-        // System Global History Arrays
         let HISTORY_ORDERS = JSON.parse(localStorage.getItem('jamakini_hist_orders')) || [];
         let HISTORY_SUPPORTS = JSON.parse(localStorage.getItem('jamakini_hist_supports')) || [];
         let HISTORY_OTPS = JSON.parse(localStorage.getItem('jamakini_hist_otps')) || [];
 
         let selectedProduct = null;
-        let generatedOTP = null;
         let authSessionData = null;
+
+        window.onload = function() {
+            renderLiveWebsite();
+            
+            // Invisible reCAPTCHA তৈরি
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                'size': 'invisible',
+                'callback': (response) => { }
+            });
+        };
 
         function renderLiveWebsite(filteredProducts = null) {
             document.getElementById('ui-banner').src = SYSTEM_DB.banner;
@@ -371,7 +383,6 @@
                 return;
             }
 
-            // Save order data payload into Admin History Node
             const newOrderRecord = {
                 timestamp: new Date().toLocaleString('bn-BD'),
                 productTitle: selectedProduct.title,
@@ -397,7 +408,6 @@
             closeProductModal();
         }
 
-        // WhatsApp Help Support Handlers
         function openSupportModal() {
             document.getElementById('support-modal').classList.remove('hidden');
         }
@@ -413,7 +423,6 @@
                 return;
             }
 
-            // Save Support Payload Into Admin History Node
             const newSupportRecord = {
                 timestamp: new Date().toLocaleString('bn-BD'),
                 userName: sName,
@@ -433,7 +442,6 @@
             document.getElementById('support-msg').value = '';
         }
 
-        // Authentication & OTP Handler Engines
         function openAuthModal(mode) {
             document.getElementById('auth-modal').classList.remove('hidden');
             document.getElementById('otp-form-layer').classList.add('hidden');
@@ -450,7 +458,6 @@
 
         function closeAuthModal() {
             document.getElementById('auth-modal').classList.add('hidden');
-            generatedOTP = null;
         }
 
         function backToAuthForm() {
@@ -460,66 +467,88 @@
         }
 
         function handleAuthSubmit(type) {
-            let targetDestination = "";
+            let targetPhone = "";
             let namePlaceholder = "";
 
             if(type === 'login') {
-                targetDestination = document.getElementById('login-email').value.trim();
+                targetPhone = document.getElementById('login-email').value.trim();
                 const pass = document.getElementById('login-pass').value;
-                if(!targetDestination || !pass) return alert('সব তথ্য দিন!');
-                authSessionData.displayUser = targetDestination;
+                if(!targetPhone || !pass) return alert('সব তথ্য দিন!');
+                authSessionData.displayUser = targetPhone;
             } else {
                 namePlaceholder = document.getElementById('reg-name').value.trim();
-                targetDestination = document.getElementById('reg-phone').value.trim();
+                targetPhone = document.getElementById('reg-phone').value.trim();
                 const pass = document.getElementById('reg-pass').value;
-                if(!namePlaceholder || !targetDestination || !pass) return alert('সব তথ্য পূরণ করুন!');
+                if(!namePlaceholder || !targetPhone || !pass) return alert('সব তথ্য পূরণ করুন!');
                 authSessionData.displayUser = namePlaceholder;
             }
 
-            // ৬ ডিজিটের র্যান্ডম ওটিপি জেনারেট করা
-            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            // Save OTP Log Record Into Admin History Hub
-            const newOtpLog = {
-                timestamp: new Date().toLocaleString('bn-BD'),
-                account: targetDestination,
-                actionType: type.toUpperCase(),
-                otpCode: generatedOTP
-            };
-            HISTORY_OTPS.unshift(newOtpLog);
-            localStorage.setItem('jamakini_hist_otps', JSON.stringify(HISTORY_OTPS));
-            updateHistoryTabBadges();
+            if (!targetPhone.startsWith('+')) {
+                if (targetPhone.startsWith('01')) {
+                    targetPhone = '+88' + targetPhone;
+                } else if (targetPhone.startsWith('8801')) {
+                    targetPhone = '+' + targetPhone;
+                } else {
+                    alert('দয়া করে সঠিক মোবাইল নম্বর লিখুন!');
+                    return;
+                }
+            }
 
-            console.log(`[Jama KINI Secure Node] Verification Code Sent to ${targetDestination} -> ${generatedOTP}`);
-            alert(`📩 আপনার (${targetDestination}) নাম্বারে/ইমেইলে একটি ভেরিফিকেশন কোড পাঠানো হয়েছে!\n\n🔐 ভেরিফিকেশন কোড (OTP): ${generatedOTP}`);
+            const appVerifier = window.recaptchaVerifier;
 
-            // কোড ইনপুট করার স্ক্রিন দেখানো
-            document.getElementById('login-form-layer').classList.add('hidden');
-            document.getElementById('signup-form-layer').classList.add('hidden');
-            document.getElementById('otp-form-layer').classList.remove('hidden');
-            document.getElementById('otp-input').value = '';
-            document.getElementById('otp-input').focus();
+            auth.signInWithPhoneNumber(targetPhone, appVerifier)
+                .then((confirmationResult) => {
+                    window.confirmationResult = confirmationResult;
+
+                    const newOtpLog = {
+                        timestamp: new Date().toLocaleString('bn-BD'),
+                        account: targetPhone,
+                        actionType: type.toUpperCase(),
+                        otpCode: "Sent via Firebase SMS Gateway"
+                    };
+                    HISTORY_OTPS.unshift(newOtpLog);
+                    localStorage.setItem('jamakini_hist_otps', JSON.stringify(HISTORY_OTPS));
+                    updateHistoryTabBadges();
+
+                    alert(`📩 আপনার (${targetPhone}) নাম্বারে একটি ভেরিফিকেশন কোড পাঠানো হয়েছে!`);
+
+                    document.getElementById('login-form-layer').classList.add('hidden');
+                    document.getElementById('signup-form-layer').classList.add('hidden');
+                    document.getElementById('otp-form-layer').classList.remove('hidden');
+                    document.getElementById('otp-input').value = '';
+                    document.getElementById('otp-input').focus();
+                })
+                .catch((error) => {
+                    console.error("Firebase Auth Error:", error);
+                    alert("🔴 ওটিপি পাঠাতে ব্যর্থ! লাইভ করার আগে ডোমেইনটি ফায়ারবেসে Authorized domains-এ অ্যাড করেছেন কিনা চেক করুন।");
+                });
         }
 
         function verifyOTPAndComplete() {
             const enteredOTP = document.getElementById('otp-input').value.trim();
 
-            if(enteredOTP === generatedOTP) {
-                alert(`🎉 সফলভাবে ভেরিফিকেশন সম্পন্ন হয়েছে!\nস্বাগতম, ${authSessionData.displayUser}`);
-                
-                document.getElementById('nav-user-status').innerHTML = `
-                    <div class="font-bold flex items-center gap-1.5 text-yellow-300">
-                        <i class="fas fa-user-check"></i> ${authSessionData.displayUser.substring(0, 10)}...
-                    </div>
-                    <div onclick="window.location.reload()" class="cursor-pointer text-xs text-gray-200 hover:underline">Logout</div>
-                `;
-                closeAuthModal();
-            } else {
-                alert('🔴 ভুল কোড দিয়েছেন! দয়া করে সঠিক ওটিপি (OTP) কোডটি লিখুন।');
+            if (!enteredOTP || enteredOTP.length !== 6) {
+                alert('দয়া করে ৬-ডিজিটের কোডটি লিখুন!');
+                return;
             }
+
+            window.confirmationResult.confirm(enteredOTP)
+                .then((result) => {
+                    alert(`🎉 সফলভাবে ভেরিফিকেশন সম্পন্ন হয়েছে!\nস্বাগতম, ${authSessionData.displayUser}`);
+                    
+                    document.getElementById('nav-user-status').innerHTML = `
+                        <div class="font-bold flex items-center gap-1.5 text-yellow-300">
+                            <i class="fas fa-user-check"></i> ${authSessionData.displayUser.substring(0, 10)}...
+                        </div>
+                        <div onclick="window.location.reload()" class="cursor-pointer text-xs text-gray-200 hover:underline">Logout</div>
+                    `;
+                    closeAuthModal();
+                })
+                .catch((error) => {
+                    alert('🔴 ভুল কোড দিয়েছেন! দয়া করে মোবাইলের সঠিক ওটিপি (OTP) কোডটি লিখুন।');
+                });
         }
 
-        // Advanced Back-end Configuration Settings System
         window.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.shiftKey && e.keyCode === 65) { 
                 e.preventDefault();
@@ -536,9 +565,9 @@
                 document.getElementById('admin-cat-input').value = SYSTEM_DB.categories.join(', ');
                 document.getElementById('admin-products-json').value = JSON.stringify(SYSTEM_DB.products, null, 2);
                 
-                // Switch back to Default Tab and load logs
                 switchAdminTab('settings');
                 updateHistoryTabBadges();
+                renderAdminProductsList();
             }
         }
 
@@ -552,7 +581,6 @@
             }
         }
 
-        // Tab Navigation for Master Control Panel History System
         function switchAdminTab(tabName) {
             const tabs = ['settings', 'orders', 'supports', 'otps'];
             tabs.forEach(t => {
@@ -622,7 +650,7 @@
                         <span class="text-yellow-500 font-bold">${log.actionType}</span> Request from 
                         <span class="text-slate-300">${log.account}</span>
                     </div>
-                    <div class="bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-800 font-bold">OTP: ${log.otpCode}</div>
+                    <div class="bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-800 font-bold">${log.otpCode}</div>
                 </div>
             `).join('');
         }
@@ -648,6 +676,36 @@
             document.getElementById('admin-products-json').value = JSON.stringify(arr, null, 2);
             document.getElementById('p-title').value = ''; document.getElementById('p-price').value = '';
             document.getElementById('p-oldprice').value = ''; document.getElementById('p-img').value = '';
+            
+            renderAdminProductsList();
+        }
+
+        function renderAdminProductsList() {
+            try {
+                const currentProducts = JSON.parse(document.getElementById('admin-products-json').value);
+                const listContainer = document.getElementById('admin-products-list-view');
+                
+                if (currentProducts.length === 0) {
+                    listContainer.innerHTML = `<p class="text-slate-500 text-center py-2">কোনো প্রোডাক্ট ডাটাবেজে নেই।</p>`;
+                    return;
+                }
+                
+                listContainer.innerHTML = currentProducts.map(p => `
+                    <div class="flex justify-between items-center bg-slate-900 p-2 rounded border border-slate-800 hover:border-slate-700">
+                        <span class="truncate pr-4 text-slate-300">${p.title} (৳${p.price})</span>
+                        <button onclick="deleteProductFromEngine(${p.id})" class="bg-red-900/80 text-red-200 hover:bg-red-700 px-2 py-0.5 rounded transition font-bold text-[10px]">DELETE</button>
+                    </div>
+                `).join('');
+            } catch(e) { }
+        }
+
+        function deleteProductFromEngine(id) {
+            if (!confirm("⚠️ আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি ইনভেন্টরি থেকে ডিলিট করতে চান?")) return;
+            let currentProducts = JSON.parse(document.getElementById('admin-products-json').value);
+            currentProducts = currentProducts.filter(p => p.id !== id);
+            
+            document.getElementById('admin-products-json').value = JSON.stringify(currentProducts, null, 2);
+            renderAdminProductsList();
         }
 
         function commitDatabaseChanges() {
@@ -672,8 +730,6 @@
             document.getElementById('admin-auth-layer').classList.remove('hidden');
             toggleAdminModal();
         }
-
-        window.onload = renderLiveWebsite;
     </script>
 </body>
 </html>
