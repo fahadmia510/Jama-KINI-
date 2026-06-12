@@ -19,6 +19,62 @@
 </head>
 <body class="bg-[#f8fafc] antialiased text-slate-800">
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            sendEmailVerification, 
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // আপনার ফায়ারবেস কনফিগারেশন সরাসরি সেট করা হলো
+        const firebaseConfig = {
+            apiKey: "AIzaSyAb6FkvjfblaGabSYOoTDPjO-w2Dv1KBec",
+            authDomain: "jama-kini-937a2.firebaseapp.com",
+            projectId: "jama-kini-937a2",
+            storageBucket: "jama-kini-937a2.firebasestorage.app",
+            messagingSenderId: "135301887243",
+            appId: "1:135301887243:web:c90c24a4f02a2ed5b55e0e",
+            measurementId: "G-Q0T3X6TPGT"
+        };
+
+        // Initialize Firebase & Auth
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // গ্লোবাল অ্যাক্সেস এর জন্য উইন্ডো অবজেক্টে ম্যাপিং
+        window.fbAuth = auth;
+        window.fbCreateUser = createUserWithEmailAndPassword;
+        window.fbSignIn = signInWithEmailAndPassword;
+        window.fbSendVerification = sendEmailVerification;
+        window.fbSignOut = signOut;
+
+        // ইউজারের লাইভ লগইন স্টেট মনিটর করা
+        onAuthStateChanged(auth, (user) => {
+            const navUserStatus = document.getElementById('nav-user-status');
+            if (user) {
+                // ইউজার লগইন থাকা অবস্থায় নাম/ইমেইল প্রদর্শন
+                const displayName = user.email ? user.email.split('@')[0] : "User";
+                navUserStatus.innerHTML = `
+                    <div class="font-bold flex items-center gap-1.5 text-yellow-300 drop-shadow-sm">
+                        <i class="fas ${user.emailVerified ? 'fa-user-check text-emerald-400' : 'fa-user-times text-rose-400'}"></i> 
+                        ${displayName.substring(0, 12)} ${user.emailVerified ? '' : '(Unverified)'}
+                    </div>
+                    <div onclick="handleFirebaseLogout()" class="cursor-pointer text-xs text-slate-200 hover:underline bg-white/10 px-2.5 py-1 rounded-md">Logout</div>
+                `;
+            } else {
+                // ইউজার লগআউট থাকা অবস্থায় ডিফল্ট মেনু
+                navUserStatus.innerHTML = `
+                    <div onclick="openAuthModal('login')" class="cursor-pointer hover:text-yellow-200 transition-colors flex items-center gap-1.5"><i class="fas fa-user-circle text-lg opacity-90"></i> Login</div>
+                    <div onclick="openAuthModal('signup')" class="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-lg border border-white/20 transition-all shadow-sm active:scale-95">Sign Up</div>
+                `;
+            }
+        });
+    </script>
+
     <div class="bg-slate-900 text-[12px] text-slate-300 py-2.5 px-4 md:px-12 flex justify-between items-center select-none font-medium tracking-wide border-b border-slate-800">
         <div class="flex gap-6">
             <span onclick="openSupportModal()" class="hover:text-red-400 cursor-pointer transition-colors flex items-center gap-1.5"><i class="fab fa-whatsapp text-emerald-400 text-sm"></i> Help & Support</span>
@@ -41,9 +97,7 @@
 
         <div class="flex items-center gap-6 text-white text-sm select-none font-semibold">
             <div id="nav-user-status" class="flex items-center gap-5">
-                <div onclick="openAuthModal('login')" class="cursor-pointer hover:text-yellow-200 transition-colors flex items-center gap-1.5"><i class="fas fa-user-circle text-lg opacity-90"></i> Login</div>
-                <div onclick="openAuthModal('signup')" class="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-lg border border-white/20 transition-all shadow-sm active:scale-95">Sign Up</div>
-            </div>
+                </div>
             <div onclick="alert('আপনার কার্টটি বর্তমানে খালি আছে!')" class="relative cursor-pointer bg-white/10 hover:bg-white/20 p-2.5 rounded-xl border border-white/10 transition-all active:scale-95 shadow-sm group">
                 <i class="fas fa-shopping-cart text-lg group-hover:rotate-6 transition-transform"></i>
                 <span class="absolute -top-1.5 -right-1.5 bg-yellow-400 text-slate-900 text-[10px] rounded-md px-1.5 py-0.5 font-black shadow-md border border-red-600 animate-pulse" id="cart-count">0</span>
@@ -145,35 +199,24 @@
             
             <div id="login-form-layer">
                 <h3 class="text-xl font-black text-slate-800 mb-1 text-center uppercase tracking-wide">Account Login</h3>
-                <p class="text-xs text-slate-400 text-center mb-5 font-medium">জামা কিনি প্রোফাইলে লগইন করুন</p>
+                <p class="text-xs text-slate-400 text-center mb-5 font-medium">আপনার ইমেইল ও পাসওয়ার্ড দিয়ে লগইন করুন</p>
                 <div class="space-y-3.5">
-                    <input type="text" id="login-email" placeholder="ইমেইল বা মোবাইল নম্বর" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
+                    <input type="email" id="login-email" placeholder="আপনার ইমেইল অ্যাড্রেস" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
                     <input type="password" id="login-pass" placeholder="পাসওয়ার্ড" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
-                    <button onclick="handleAuthSubmit('login')" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:brightness-105 text-white font-bold py-3 rounded-xl text-sm shadow-md transition active:scale-98 mt-2">কোড পাঠান (OTP)</button>
+                    <button onclick="handleFirebaseLogin()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:brightness-105 text-white font-bold py-3 rounded-xl text-sm shadow-md transition active:scale-98 mt-2">লগইন করুন</button>
                 </div>
                 <p class="text-xs text-center text-slate-500 mt-5 font-medium">নতুন ইউজার? <span onclick="openAuthModal('signup')" class="text-red-600 font-bold cursor-pointer hover:underline">নতুন অ্যাকাউন্ট খুলুন</span></p>
             </div>
 
             <div id="signup-form-layer" class="hidden">
                 <h3 class="text-xl font-black text-slate-800 mb-1 text-center uppercase tracking-wide">Create Account</h3>
-                <p class="text-xs text-slate-400 text-center mb-5 font-medium">সহজেই জামা কিনি-তে রেজিস্ট্রেশন করুন</p>
+                <p class="text-xs text-slate-400 text-center mb-5 font-medium">অ্যাকাউন্ট খোলার পর ইমেইলে ভেরিফিকেশন লিংক যাবে</p>
                 <div class="space-y-3.5">
-                    <input type="text" id="reg-name" placeholder="আপনার সম্পূর্ণ নাম" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
-                    <input type="text" id="reg-phone" placeholder="ইমেইল বা মোবাইল নম্বর" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
+                    <input type="email" id="reg-email" placeholder="আপনার ইমেইল অ্যাড্রেস" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
                     <input type="password" id="reg-pass" placeholder="নতুন পাসওয়ার্ড তৈরি করুন" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
-                    <button onclick="handleAuthSubmit('signup')" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-105 text-white font-bold py-3 rounded-xl text-sm shadow-md transition active:scale-98 mt-2">কোড পাঠান (OTP)</button>
+                    <button onclick="handleFirebaseSignUp()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-105 text-white font-bold py-3 rounded-xl text-sm shadow-md transition active:scale-98 mt-2">সাইন-আপ এবং কোড পাঠান</button>
                 </div>
                 <p class="text-xs text-center text-slate-500 mt-5 font-medium">ইতিমধ্যে অ্যাকাউন্ট আছে? <span onclick="openAuthModal('login')" class="text-red-600 font-bold cursor-pointer hover:underline">লগইন করুন</span></p>
-            </div>
-
-            <div id="otp-form-layer" class="hidden">
-                <h3 class="text-xl font-black text-slate-800 mb-1 text-center uppercase tracking-wide">OTP Verification</h3>
-                <p class="text-xs text-slate-400 text-center mb-5 font-medium">অ্যাকাউন্ট ভেরিফাই করতে ৬-ডিজিটের কোডটি দিন</p>
-                <div class="space-y-3.5">
-                    <input type="text" id="otp-input" maxlength="6" placeholder="------" class="w-full border-2 border-slate-200 rounded-2xl px-4 py-3 text-center text-2xl font-black tracking-widest focus:outline-none focus:border-emerald-500 text-slate-800 bg-slate-50 shadow-inner">
-                    <button onclick="verifyOTPAndComplete()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-105 text-white font-bold py-3 rounded-xl text-sm shadow-md transition active:scale-98 mt-2">ভেরিফিকেশন সম্পন্ন করুন</button>
-                </div>
-                <p class="text-xs text-center text-slate-500 mt-5 font-medium"><span onclick="backToAuthForm()" class="text-red-600 font-bold cursor-pointer hover:underline">পিছনে যান</span></p>
             </div>
         </div>
     </div>
@@ -204,7 +247,6 @@
                     <button onclick="switchAdminTab('settings')" id="tab-btn-settings" class="px-4 py-2 bg-red-600 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition">Core Settings</button>
                     <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs uppercase tracking-wider transition">Order History (<span id="count-hist-orders">0</span>)</button>
                     <button onclick="switchAdminTab('supports')" id="tab-btn-supports" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs uppercase tracking-wider transition">Support Inbox (<span id="count-hist-supports">0</span>)</button>
-                    <button onclick="switchAdminTab('otps')" id="tab-btn-otps" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs uppercase tracking-wider transition">OTP Activity Log (<span id="count-hist-otps">0</span>)</button>
                 </div>
 
                 <div id="sub-panel-settings" class="space-y-6">
@@ -249,14 +291,6 @@
                     <div id="log-supports-container" class="space-y-3 max-h-[50vh] overflow-y-auto pr-1"></div>
                 </div>
 
-                <div id="sub-panel-otps" class="hidden space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-sm font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-shield-alt mr-1"></i> Security OTP Log Stream</h3>
-                        <button onclick="clearHistoryLog('otps')" class="bg-rose-950/60 hover:bg-rose-900 text-rose-200 text-[11px] px-3 py-1.5 rounded-lg border border-rose-800/50 transition">Clear OTP Logs</button>
-                    </div>
-                    <div id="log-otps-container" class="space-y-2 max-h-[50vh] overflow-y-auto pr-1 font-mono text-xs"></div>
-                </div>
-
                 <div class="flex gap-4 border-t border-slate-800 pt-5">
                     <button onclick="commitDatabaseChanges()" class="flex-1 bg-gradient-to-r from-red-600 to-rose-600 hover:brightness-105 text-white font-black py-3.5 rounded-xl tracking-widest text-sm transition uppercase shadow-lg shadow-red-600/10 active:scale-98">Commit Changes</button>
                     <button onclick="logoutAdmin()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-6 rounded-xl text-sm transition active:scale-98">Lock System</button>
@@ -278,15 +312,110 @@
         };
 
         let SYSTEM_DB = JSON.parse(localStorage.getItem('jamakini_live_db')) || DEFAULT_DATABASE;
-        
         let HISTORY_ORDERS = JSON.parse(localStorage.getItem('jamakini_hist_orders')) || [];
         let HISTORY_SUPPORTS = JSON.parse(localStorage.getItem('jamakini_hist_supports')) || [];
-        let HISTORY_OTPS = JSON.parse(localStorage.getItem('jamakini_hist_otps')) || [];
 
         let selectedProduct = null;
-        let generatedOTP = null;
-        let authSessionData = null;
 
+        // Firebase Auth Methods Hooked Into UI Buttons
+        function handleFirebaseSignUp() {
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-pass').value;
+
+            if(!email || !password) return alert('⚠️ দয়া করে ইমেইল এবং পাসওয়ার্ড দুটিই ইনপুট করুন!');
+
+            window.fbCreateUser(window.fbAuth, email, password)
+                .then((userCredential) => {
+                    window.fbSendVerification(window.fbAuth.currentUser)
+                        .then(() => {
+                            alert("📩 সফলভাবে সাইন-আপ হয়েছে! আপনার ইমেইল ইনবক্সে একটি সিকিউরিটি ভেরিফিকেশন লিংক পাঠানো হয়েছে। লিংকে ক্লিক করে অ্যাকাউন্ট ভেরিফাই করার পর অর্ডার করতে পারবেন।");
+                            closeAuthModal();
+                        });
+                })
+                .catch((error) => {
+                    alert("🔴 অ্যাকাউন্ট খুলতে ব্যর্থ: " + error.message);
+                });
+        }
+
+        function handleFirebaseLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-pass').value;
+
+            if(!email || !password) return alert('⚠️ আপনার রেজিস্টার্ড ইমেইল ও পাসওয়ার্ড দিন!');
+
+            window.fbSignIn(window.fbAuth, email, password)
+                .then((userCredential) => {
+                    alert("🎉 জামা কিনি প্রোফাইলে সফলভাবে লগইন হয়েছেন!");
+                    closeAuthModal();
+                })
+                .catch((error) => {
+                    alert("🔴 লগইন ব্যর্থ: " + error.message);
+                });
+        }
+
+        function handleFirebaseLogout() {
+            window.fbSignOut(window.fbAuth).then(() => {
+                alert("🔒 প্রোফাইল সফলভাবে লগআউট করা হয়েছে।");
+            });
+        }
+
+        // ক্রুশিয়াল অর্ডার সাবমিশন প্রোটেকশন গেটওয়ে
+        function submitOrderViaWhatsApp() {
+            const auth = window.fbAuth;
+            const user = auth.currentUser;
+
+            // ১. ইউজার লগইন করা আছে কিনা তার গেটওয়ে চেক
+            if (!user) {
+                alert("⚠️ অর্ডার প্রসেস করতে প্রথমে আপনার জামা কিনি অ্যাকাউন্টে লগইন অথবা সাইন-আপ করুন!");
+                openAuthModal('login');
+                return;
+            }
+
+            // ২. ফায়ারবেস লাইভ সেশন রিলোড করে রিয়েল-টাইম ইমেইল ভেরিফিকেশন স্ট্যাটাস চেক করা
+            user.reload().then(() => {
+                if (!user.emailVerified) {
+                    alert("❌ আপনার অ্যাকাউন্টটি এখনো ভেরিফাই করা হয়নি! অনুগ্রহ করে আপনার ইমেইল ইনবক্স চেক করুন এবং ভেরিফিকেশন লিংকে ক্লিক করে অ্যাকাউন্টটি সচল করুন। ভেরিফিকেশন ছাড়া অর্ডার করা সম্ভব নয়।");
+                    return; // অর্ডার প্রসেস এখানেই সম্পূর্ণ লক/ব্লক হয়ে যাবে
+                }
+
+                // ৩. কাস্টমার ভেরিফাইড হলে নিচের অর্ডার ডেটা জেনারেট হবে
+                const name = document.getElementById('cust-name').value.trim();
+                const phone = document.getElementById('cust-phone').value.trim();
+                const address = document.getElementById('cust-address').value.trim();
+                const delivery = document.getElementById('cust-delivery').value;
+
+                if (!name || !phone || !address) {
+                    alert('⚠️ দয়া করে অর্ডার ফর্মের সব তথ্য সঠিকভাবে পূরণ করুন!');
+                    return;
+                }
+
+                const newOrderRecord = {
+                    timestamp: new Date().toLocaleString('bn-BD'),
+                    productTitle: selectedProduct.title,
+                    productPrice: selectedProduct.price,
+                    customerName: name,
+                    customerPhone: phone,
+                    customerAddress: address,
+                    deliveryMethod: delivery
+                };
+                HISTORY_ORDERS.unshift(newOrderRecord);
+                localStorage.setItem('jamakini_hist_orders', JSON.stringify(HISTORY_ORDERS));
+                updateHistoryTabBadges();
+
+                const textMessage = `🔔 *নতুন অর্ডার এসেছে (Jama KINI)*\n\n` +
+                                    `📦 *প্রোডাক্ট:* ${selectedProduct.title}\n` +
+                                    `💰 *মূল্য:* ৳${selectedProduct.price}\n\n` +
+                                    `👤 *কাস্টমারের নাম:* ${name}\n` +
+                                    `📞 *মোবাইল নম্বর:* ${phone}\n` +
+                                    `📍 *ঠিকানা:* ${address}\n` +
+                                    `🚚 *ডেলিভারি মেথড:* ${delivery}`;
+
+                window.open(`https://api.whatsapp.com/send?phone=${SYSTEM_DB.whatsapp}&text=${encodeURIComponent(textMessage)}`, '_blank');
+                closeProductModal();
+            });
+        }
+
+        // ইউজার ইন্টারফেস রেন্ডারিং ইঞ্জিন
         function renderLiveWebsite(filteredProducts = null) {
             document.getElementById('ui-banner').src = SYSTEM_DB.banner;
 
@@ -331,7 +460,8 @@
         }
 
         function filterByCategory(catName) {
-            alert('Category Filtering Route: ' + catName);
+            const filtered = SYSTEM_DB.products.filter(p => p.title.toLowerCase().includes(catName.toLowerCase().split(' ')[0]));
+            renderLiveWebsite(filtered);
         }
 
         function openProductModal(id) {
@@ -350,42 +480,9 @@
         function closeProductModal() {
             document.getElementById('product-detail-modal').classList.add('hidden');
             document.body.style.overflow = 'auto';
-        }
-
-        function submitOrderViaWhatsApp() {
-            const name = document.getElementById('cust-name').value.trim();
-            const phone = document.getElementById('cust-phone').value.trim();
-            const address = document.getElementById('cust-address').value.trim();
-            const delivery = document.getElementById('cust-delivery').value;
-
-            if (!name || !phone || !address) {
-                alert('⚠️ দয়া করে অর্ডার ফর্মের সব তথ্য সঠিকভাবে পূরণ করুন!');
-                return;
-            }
-
-            const newOrderRecord = {
-                timestamp: new Date().toLocaleString('bn-BD'),
-                productTitle: selectedProduct.title,
-                productPrice: selectedProduct.price,
-                customerName: name,
-                customerPhone: phone,
-                customerAddress: address,
-                deliveryMethod: delivery
-            };
-            HISTORY_ORDERS.unshift(newOrderRecord);
-            localStorage.setItem('jamakini_hist_orders', JSON.stringify(HISTORY_ORDERS));
-            updateHistoryTabBadges();
-
-            const textMessage = `🔔 *নতুন অর্ডার এসেছে (Jama KINI)*\n\n` +
-                                `📦 *প্রোডাক্ট:* ${selectedProduct.title}\n` +
-                                `💰 *মূল্য:* ৳${selectedProduct.price}\n\n` +
-                                `👤 *কাস্টমারের নাম:* ${name}\n` +
-                                `📞 *মোবাইল নম্বর:* ${phone}\n` +
-                                `📍 *ঠিকানা:* ${address}\n` +
-                                `🚚 *ডেলিভারি মেথড:* ${delivery}`;
-
-            window.open(`https://api.whatsapp.com/send?phone=${SYSTEM_DB.whatsapp}&text=${encodeURIComponent(textMessage)}`, '_blank');
-            closeProductModal();
+            document.getElementById('cust-name').value = '';
+            document.getElementById('cust-phone').value = '';
+            document.getElementById('cust-address').value = '';
         }
 
         function openSupportModal() {
@@ -424,9 +521,6 @@
 
         function openAuthModal(mode) {
             document.getElementById('auth-modal').classList.remove('hidden');
-            document.getElementById('otp-form-layer').classList.add('hidden');
-            authSessionData = { currentMode: mode };
-
             if(mode === 'login') {
                 document.getElementById('login-form-layer').classList.remove('hidden');
                 document.getElementById('signup-form-layer').classList.add('hidden');
@@ -438,72 +532,9 @@
 
         function closeAuthModal() {
             document.getElementById('auth-modal').classList.add('hidden');
-            generatedOTP = null;
         }
 
-        function backToAuthForm() {
-            if(authSessionData && authSessionData.currentMode) {
-                openAuthModal(authSessionData.currentMode);
-            }
-        }
-
-        function handleAuthSubmit(type) {
-            let targetDestination = "";
-            let namePlaceholder = "";
-
-            if(type === 'login') {
-                targetDestination = document.getElementById('login-email').value.trim();
-                const pass = document.getElementById('login-pass').value;
-                if(!targetDestination || !pass) return alert('সব তথ্য দিন!');
-                authSessionData.displayUser = targetDestination;
-            } else {
-                namePlaceholder = document.getElementById('reg-name').value.trim();
-                targetDestination = document.getElementById('reg-phone').value.trim();
-                const pass = document.getElementById('reg-pass').value;
-                if(!namePlaceholder || !targetDestination || !pass) return alert('সব তথ্য পূরণ করুন!');
-                authSessionData.displayUser = namePlaceholder;
-            }
-
-            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            const newOtpLog = {
-                timestamp: new Date().toLocaleString('bn-BD'),
-                account: targetDestination,
-                actionType: type.toUpperCase(),
-                otpCode: generatedOTP
-            };
-            HISTORY_OTPS.unshift(newOtpLog);
-            localStorage.setItem('jamakini_hist_otps', JSON.stringify(HISTORY_OTPS));
-            updateHistoryTabBadges();
-
-            console.log(`[Jama KINI Secure Node] Verification Code Sent to ${targetDestination} -> ${generatedOTP}`);
-            alert(`📩 আপনার (${targetDestination}) নাম্বারে/ইমেইলে একটি ভেরিফিকেশন কোড পাঠানো হয়েছে!\n\n🔐 ভেরিফিকেশন কোড (OTP): ${generatedOTP}`);
-
-            document.getElementById('login-form-layer').classList.add('hidden');
-            document.getElementById('signup-form-layer').classList.add('hidden');
-            document.getElementById('otp-form-layer').classList.remove('hidden');
-            document.getElementById('otp-input').value = '';
-            document.getElementById('otp-input').focus();
-        }
-
-        function verifyOTPAndComplete() {
-            const enteredOTP = document.getElementById('otp-input').value.trim();
-
-            if(enteredOTP === generatedOTP) {
-                alert(`🎉 সফলভাবে ভেরিফিকেশন সম্পন্ন হয়েছে!\nস্বাগতম, ${authSessionData.displayUser}`);
-                
-                document.getElementById('nav-user-status').innerHTML = `
-                    <div class="font-bold flex items-center gap-1.5 text-yellow-300 drop-shadow-sm">
-                        <i class="fas fa-user-check"></i> ${authSessionData.displayUser.substring(0, 10)}...
-                    </div>
-                    <div onclick="window.location.reload()" class="cursor-pointer text-xs text-slate-200 hover:underline">Logout</div>
-                `;
-                closeAuthModal();
-            } else {
-                alert('🔴 ভুল কোড দিয়েছেন! দয়া করে সঠিক ওটিপি (OTP) কোডটি লিখুন।');
-            }
-        }
-
+        // মাস্টার কন্ট্রোল প্যানেল হটকি লজিক (Ctrl + Shift + A)
         window.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.shiftKey && e.keyCode === 65) { 
                 e.preventDefault();
@@ -536,7 +567,7 @@
         }
 
         function switchAdminTab(tabName) {
-            const tabs = ['settings', 'orders', 'supports', 'otps'];
+            const tabs = ['settings', 'orders', 'supports'];
             tabs.forEach(t => {
                 document.getElementById(`sub-panel-${t}`).classList.add('hidden');
                 document.getElementById(`tab-btn-${t}`).className = "px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs uppercase tracking-wider transition";
@@ -547,13 +578,11 @@
 
             if (tabName === 'orders') renderOrderHistoryLogs();
             if (tabName === 'supports') renderSupportHistoryLogs();
-            if (tabName === 'otps') renderOtpHistoryLogs();
         }
 
         function updateHistoryTabBadges() {
             document.getElementById('count-hist-orders').innerText = HISTORY_ORDERS.length;
             document.getElementById('count-hist-supports').innerText = HISTORY_SUPPORTS.length;
-            document.getElementById('count-hist-otps').innerText = HISTORY_OTPS.length;
         }
 
         function renderOrderHistoryLogs() {
@@ -591,29 +620,10 @@
             `).join('');
         }
 
-        function renderOtpHistoryLogs() {
-            const container = document.getElementById('log-otps-container');
-            if (HISTORY_OTPS.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-500 py-6 text-center font-sans font-medium">কোনো সিকিউরিটি ওটিপি ট্র্যাকিং লগ পাওয়া যায়নি।</p>`;
-                return;
-            }
-            container.innerHTML = HISTORY_OTPS.map((log) => `
-                <div class="bg-slate-950 border border-slate-850 px-4 py-3 rounded-xl flex justify-between items-center text-[11px] shadow-inner gap-4">
-                    <div class="leading-relaxed">
-                        <span class="text-slate-600 font-mono">[${log.timestamp}]</span> 
-                        <span class="text-yellow-500 font-bold bg-yellow-500/10 px-1.5 py-0.5 rounded border border-yellow-500/10 text-[10px] uppercase">${log.actionType}</span> Request from 
-                        <span class="text-slate-300 font-medium">${log.account}</span>
-                    </div>
-                    <div class="bg-emerald-950/60 text-emerald-400 px-3 py-1 rounded-lg border border-emerald-800/60 font-black tracking-wider shadow-sm shrink-0">OTP: ${log.otpCode}</div>
-                </div>
-            `).join('');
-        }
-
         function clearHistoryLog(type) {
             if (!confirm(`⚠️ আপনি কি নিশ্চিতভাবে সমস্ত ${type} হিস্ট্রি চিরতরে মুছে ফেলতে চান?`)) return;
             if (type === 'orders') { HISTORY_ORDERS = []; localStorage.removeItem('jamakini_hist_orders'); renderOrderHistoryLogs(); }
             if (type === 'supports') { HISTORY_SUPPORTS = []; localStorage.removeItem('jamakini_hist_supports'); renderSupportHistoryLogs(); }
-            if (type === 'otps') { HISTORY_OTPS = []; localStorage.removeItem('jamakini_hist_otps'); renderOtpHistoryLogs(); }
             updateHistoryTabBadges();
         }
 
@@ -659,5 +669,3 @@
     </script>
 </body>
 </html>
-
-```
