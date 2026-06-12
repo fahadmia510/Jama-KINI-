@@ -29,6 +29,11 @@
             onAuthStateChanged,
             signOut
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // আপনার ফায়ারবেস কনফিগারেশন সরাসরি সেট করা হলো
         const firebaseConfig = {
@@ -41,16 +46,20 @@
             measurementId: "G-Q0T3X6TPGT"
         };
 
-        // Initialize Firebase & Auth
+        // Initialize Firebase, Auth & Firestore
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
         // গ্লোবাল অ্যাক্সেস এর জন্য উইন্ডো অবজেক্টে ম্যাপিং
         window.fbAuth = auth;
+        window.fbFirestore = db;
         window.fbCreateUser = createUserWithEmailAndPassword;
         window.fbSignIn = signInWithEmailAndPassword;
         window.fbSendVerification = sendEmailVerification;
         window.fbSignOut = signOut;
+        window.fbSetDoc = setDoc;
+        window.fbDoc = doc;
 
         // ইউজারের লাইভ লগইন স্টেট মনিটর করা
         onAuthStateChanged(auth, (user) => {
@@ -96,8 +105,7 @@
         </div>
 
         <div class="flex items-center gap-6 text-white text-sm select-none font-semibold">
-            <div id="nav-user-status" class="flex items-center gap-5">
-                </div>
+            <div id="nav-user-status" class="flex items-center gap-5"></div>
             <div onclick="alert('আপনার কার্টটি বর্তমানে খালি আছে!')" class="relative cursor-pointer bg-white/10 hover:bg-white/20 p-2.5 rounded-xl border border-white/10 transition-all active:scale-95 shadow-sm group">
                 <i class="fas fa-shopping-cart text-lg group-hover:rotate-6 transition-transform"></i>
                 <span class="absolute -top-1.5 -right-1.5 bg-yellow-400 text-slate-900 text-[10px] rounded-md px-1.5 py-0.5 font-black shadow-md border border-red-600 animate-pulse" id="cart-count">0</span>
@@ -155,7 +163,7 @@
                             <input type="text" id="cust-address" placeholder="সম্পূর্ণ ঠিকানা (জেলাসহ)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all font-medium">
                             <select id="cust-delivery" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all font-medium text-slate-700">
                                 <option value="ঢাকার ভিতরে (৳৮০)">ঢাকার ভিতরে ডেলিভারি চার্জ (৳৮০)</option>
-                                <option value="ঢাকার বাইরে (৳১৫০)">ঢাকার বাইরে ডেলিভারি চার্জ (৳১৫০)</option>
+                                <option value="ঢাকার বাইরে (৳১৫ೊ)">ঢাকার বাইরে ডেলিভারি চার্জ (৳১৫০)</option>
                             </select>
                         </div>
                         <button onclick="submitOrderViaWhatsApp()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-105 text-white font-bold py-3 rounded-xl mt-5 transition flex items-center justify-center gap-2 text-sm shadow-md shadow-emerald-600/20 active:scale-98">
@@ -359,7 +367,7 @@
             });
         }
 
-        // ক্রুশিয়াল অর্ডার সাবমিশন প্রোটেকশন গেটওয়ে
+        // ক্রুশিয়াল অর্ডার সাবমিশন প্রোটেকশন গেটওয়ে এবং ক্লাউড ফায়ারস্টোর ব্যাকআপ ইন্টিগ্রেশন
         function submitOrderViaWhatsApp() {
             const auth = window.fbAuth;
             const user = auth.currentUser;
@@ -375,7 +383,7 @@
             user.reload().then(() => {
                 if (!user.emailVerified) {
                     alert("❌ আপনার অ্যাকাউন্টটি এখনো ভেরিফাই করা হয়নি! অনুগ্রহ করে আপনার ইমেইল ইনবক্স চেক করুন এবং ভেরিফিকেশন লিংকে ক্লিক করে অ্যাকাউন্টটি সচল করুন। ভেরিফিকেশন ছাড়া অর্ডার করা সম্ভব নয়।");
-                    return; // অর্ডার প্রসেস এখানেই সম্পূর্ণ লক/ব্লক হয়ে যাবে
+                    return; 
                 }
 
                 // ৩. কাস্টমার ভেরিফাইড হলে নিচের অর্ডার ডেটা জেনারেট হবে
@@ -389,18 +397,35 @@
                     return;
                 }
 
+                const timestampRaw = new Date();
+                const orderId = "ORD-" + timestampRaw.getTime();
+
                 const newOrderRecord = {
-                    timestamp: new Date().toLocaleString('bn-BD'),
+                    orderId: orderId,
+                    timestamp: timestampRaw.toLocaleString('bn-BD'),
                     productTitle: selectedProduct.title,
                     productPrice: selectedProduct.price,
                     customerName: name,
                     customerPhone: phone,
                     customerAddress: address,
-                    deliveryMethod: delivery
+                    deliveryMethod: delivery,
+                    userEmail: user.email
                 };
+
+                // লোকাল স্টোরেজে পুশ করা
                 HISTORY_ORDERS.unshift(newOrderRecord);
                 localStorage.setItem('jamakini_hist_orders', JSON.stringify(HISTORY_ORDERS));
                 updateHistoryTabBadges();
+
+                // ফায়ারস্টোর ক্লাউড ডাটাবেসে ক্লায়েন্ট ব্যাকআপ পাঠানো 
+                const docRef = window.fbDoc(window.fbFirestore, "orders", orderId);
+                window.fbSetDoc(docRef, newOrderRecord)
+                    .then(() => {
+                        console.log("✔ Order cloud backup sync completed successfully.");
+                    })
+                    .catch((fsErr) => {
+                        console.error("Firestore sync log warning: ", fsErr);
+                    });
 
                 const textMessage = `🔔 *নতুন অর্ডার এসেছে (Jama KINI)*\n\n` +
                                     `📦 *প্রোডাক্ট:* ${selectedProduct.title}\n` +
@@ -491,6 +516,7 @@
         function closeSupportModal() {
             document.getElementById('support-modal').classList.add('hidden');
         }
+        
         function sendSupportMessage() {
             const sName = document.getElementById('support-name').value.trim();
             const sMsg = document.getElementById('support-msg').value.trim();
@@ -500,14 +526,29 @@
                 return;
             }
 
+            const timestampRaw = new Date();
+            const supportId = "SUP-" + timestampRaw.getTime();
+
             const newSupportRecord = {
-                timestamp: new Date().toLocaleString('bn-BD'),
+                supportId: supportId,
+                timestamp: timestampRaw.toLocaleString('bn-BD'),
                 userName: sName,
                 message: sMsg
             };
+
             HISTORY_SUPPORTS.unshift(newSupportRecord);
             localStorage.setItem('jamakini_hist_supports', JSON.stringify(HISTORY_SUPPORTS));
             updateHistoryTabBadges();
+
+            // ফায়ারস্টোর ক্লাউড ডাটাবেসে সাপোর্ট ইনবক্স ব্যাকআপ পাঠানো 
+            const docRef = window.fbDoc(window.fbFirestore, "supports", supportId);
+            window.fbSetDoc(docRef, newSupportRecord)
+                .then(() => {
+                    console.log("✔ Support message cloud sync completed.");
+                })
+                .catch((fsErr) => {
+                    console.error("Firestore sync error: ", fsErr);
+                });
 
             const supportPayload = `🆘 *হেল্প ও সাপোর্ট প্রয়োজন (Jama KINI)*\n\n` +
                                    `👤 *ইউজারের নাম:* ${sName}\n` +
@@ -563,7 +604,7 @@
                 switchAdminTab('settings');
             } else {
                 alert('🔴 Access Denied: Invalid Security Key Node!');
-            }
+            }verifySystemAdmin
         }
 
         function switchAdminTab(tabName) {
