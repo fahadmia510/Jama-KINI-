@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daraz Clone - Bangladesh</title>
+    <!-- Tailwind CSS for Premium UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Smooth Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #f85606; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+    <!-- Top Navigation Bar -->
+    <div class="bg-[#f5f5f5] text-[11px] text-gray-600 py-1.5 px-4 md:px-12 flex justify-between border-b select-none">
+        <div class="flex gap-5">
+            <span class="hover:text-[#f85606] cursor-pointer transition">Become a Seller</span>
+            <span class="hover:text-[#f85606] cursor-pointer transition">Daraz Affiliate Program</span>
+            <span class="hover:text-[#f85606] cursor-pointer transition">Help & Support</span>
+        </div>
+        <div class="flex gap-5">
+            <span class="hover:text-[#f85606] cursor-pointer transition"><i class="fas fa-bell mr-1"></i> Notifications</span>
+            <span class="hover:text-[#f85606] cursor-pointer transition">Track My Order</span>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <nav class="bg-[#f85606] px-4 md:px-12 py-3 sticky top-0 z-40 flex items-center justify-between gap-6 shadow-md">
+        <!-- Logo -->
+        <div class="text-white font-black text-3xl tracking-tighter cursor-pointer select-none">daraz</div>
+        
+        <!-- Deep Search Engine Bar -->
+        <div class="flex-1 max-w-3xl relative hidden md:block">
+            <input type="text" placeholder="Search in Daraz..." class="w-full py-2 px-4 pr-12 rounded-md focus:outline-none text-sm shadow-inner text-gray-800">
+            <button class="absolute right-0 top-0 bg-[#ffe1d2] text-[#f85606] px-5 py-2.5 rounded-r-md hover:bg-white transition duration-200">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <!-- User Options Profile -->
+        <div class="flex items-center gap-6 text-white text-sm select-none">
+            <div class="cursor-pointer font-bold hover:text-orange-100 transition"><i class="fas fa-user-circle text-lg mr-1.5"></i> Login</div>
+            <div class="cursor-pointer font-bold hover:text-orange-100 transition">Sign Up</div>
+            <div class="relative cursor-pointer group">
+                <i class="fas fa-shopping-cart text-xl group-hover:scale-105 transition"></i>
+                <span class="absolute -top-2 -right-2 bg-white text-[#f85606] text-[10px] rounded-full px-1.5 font-black shadow" id="cart-count">0</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Master Layout Wrapper -->
+    <main class="max-w-[1200px] mx-auto my-5 px-4">
+        
+        <!-- Hero Section Components -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 bg-white rounded-md shadow-sm overflow-hidden p-3 border border-gray-200">
+            <!-- Sidebar Categories Layout -->
+            <div class="hidden lg:block col-span-1 border-r border-gray-100 text-xs text-gray-700 space-y-1 pr-3" id="ui-categories">
+                <!-- Programmatically generated categories -->
+            </div>
+            <!-- Dynamic Carousel Banner -->
+            <div class="col-span-1 lg:col-span-3 relative bg-gray-100 rounded-md overflow-hidden h-[200px] md:h-[340px] shadow-inner">
+                <img id="ui-banner" src="" class="w-full h-full object-cover transition-all duration-500" alt="Daraz Campaign Banner">
+            </div>
+        </div>
+
+        <!-- System Flash Sale Dynamic Layout -->
+        <section class="mt-6 bg-white rounded-md p-4 shadow-sm border border-gray-200">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-3 mb-4">
+                <h2 class="text-lg font-extrabold text-[#f85606] flex items-center gap-2 tracking-wide uppercase">
+                    <i class="fas fa-bolt animate-pulse"></i> Flash Sale
+                </h2>
+                <button class="border border-[#f85606] text-[#f85606] px-5 py-1 text-xs font-bold rounded hover:bg-[#f85606] hover:text-white transition duration-300">SHOP MORE</button>
+            </div>
+            <!-- Grid Dynamic Products Root -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5" id="ui-products">
+                <!-- Code Injection Platform -->
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================================================================= -->
+    <!-- HIDDEN ENCRYPTED CONTROL SYSTEM (ADMIN PANEL MODAL) -->
+    <!-- Accessible only via secret key combo: Ctrl + Shift + A -->
+    <!-- ========================================================================= -->
+    <div id="secure-admin-panel" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl p-6 shadow-2xl text-slate-100">
+            
+            <!-- Admin Header -->
+            <div class="flex justify-between items-center border-b border-slate-700 pb-4 mb-6">
+                <h2 class="text-xl font-black text-orange-500 tracking-wider"><i class="fas fa-user-shield mr-2"></i> DARZ MASTER BACK-OFFICE</h2>
+                <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white text-lg"><i class="fas fa-times"></i></button>
+            </div>
+
+            <!-- Login Layer -->
+            <div id="admin-auth-layer" class="space-y-4">
+                <p class="text-xs text-slate-400 uppercase tracking-widest font-bold">System Authorization Required</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Admin Security ID</label>
+                        <input type="text" id="auth-id" class="w-full bg-slate-800 border border-slate-700 px-4 py-2.5 rounded text-sm focus:outline-none focus:border-orange-500 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Secret Access Token</label>
+                        <input type="password" id="auth-pass" class="w-full bg-slate-800 border border-slate-700 px-4 py-2.5 rounded text-sm focus:outline-none focus:border-orange-500 text-white">
+                    </div>
+                </div>
+                <button onclick="verifySystemAdmin()" class="w-full bg-orange-600 hover:bg-orange-500 text-white py-2.5 rounded text-sm font-bold tracking-widest transition">VERIFY CREDENTIALS</button>
+            </div>
+
+            <!-- Management Operational Layer (Hidden initially) -->
+            <div id="admin-management-layer" class="hidden space-y-6">
+                <!-- Banner CMS -->
+                <div class="bg-slate-800 p-4 rounded border border-slate-700">
+                    <h3 class="text-sm font-bold text-orange-400 mb-3 uppercase tracking-wider"><i class="fas fa-image mr-1.5"></i> Banner Controller</h3>
+                    <input type="text" id="admin-banner-input" placeholder="Paste Main Banner Image URL" class="w-full bg-slate-700 border border-slate-600 px-4 py-2 rounded text-sm text-white focus:outline-none focus:border-orange-500">
+                </div>
+
+                <!-- Categories CMS -->
+                <div class="bg-slate-800 p-4 rounded border border-slate-700">
+                    <h3 class="text-sm font-bold text-orange-400 mb-3 uppercase tracking-wider"><i class="fas fa-list-ul mr-1.5"></i> Categories Controller</h3>
+                    <input type="text" id="admin-cat-input" placeholder="Electronics, Fashion, Health (Comma Separated)" class="w-full bg-slate-700 border border-slate-600 px-4 py-2 rounded text-sm text-white focus:outline-none focus:border-orange-500">
+                </div>
+
+                <!-- Products CMS Engine -->
+                <div class="bg-slate-800 p-4 rounded border border-slate-700">
+                    <h3 class="text-sm font-bold text-orange-400 mb-3 uppercase tracking-wider"><i class="fas fa-box-open mr-1.5"></i> Live Inventory Database</h3>
+                    
+                    <!-- Form to add single products easily -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 bg-slate-900 p-3 rounded border border-slate-700">
+                        <input type="text" id="p-title" placeholder="Product Title" class="bg-slate-700 border border-slate-600 px-2 py-1.5 rounded text-xs text-white">
+                        <input type="number" id="p-price" placeholder="Sale Price (৳)" class="bg-slate-700 border border-slate-600 px-2 py-1.5 rounded text-xs text-white">
+                        <input type="number" id="p-oldprice" placeholder="Old Price (৳)" class="bg-slate-700 border border-slate-600 px-2 py-1.5 rounded text-xs text-white">
+                        <input type="text" id="p-img" placeholder="Product Image URL" class="bg-slate-700 border border-slate-600 px-2 py-1.5 rounded text-xs text-white">
+                        <button onclick="addNewProductToEngine()" class="col-span-1 md:col-span-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1.5 rounded text-xs tracking-wider transition">ADD PRODUCT TO ARRAY</button>
+                    </div>
+
+                    <!-- JSON Schema Direct Editor -->
+                    <label class="block text-xs text-slate-400 mb-1">Direct System Array Data (JSON Node)</label>
+                    <textarea id="admin-products-json" rows="6" class="w-full bg-slate-700 border border-slate-600 p-3 rounded text-xs font-mono text-emerald-400 focus:outline-none focus:border-orange-500"></textarea>
+                </div>
+
+                <!-- Global Execution Call -->
+                <div class="flex gap-4">
+                    <button onclick="commitDatabaseChanges()" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-black py-3 rounded tracking-widest text-sm transition shadow-lg uppercase">Commit Changes to Live Production</button>
+                    <button onclick="logoutAdmin()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 rounded text-sm transition">Lock System</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- PLATFORM ENGINE CORE JAVASCRIPT SYSTEM -->
+    <!-- ========================================================================= -->
+    <script>
+        // System Initial Mock DB Setup Structure
+        const DEFAULT_DATABASE = {
+            banner: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200",
+            categories: ["Electronic Devices", "Electronic Accessories", "TV & Home Appliances", "Health & Beauty", "Babies & Toys", "Groceries & Pets", "Home & Lifestyle", "Sports & Outdoors"],
+            products: [
+                { id: 1, title: "Premium AirPods Pro 2nd Gen Clone with Real ANC", price: 1250, oldPrice: 2500, image: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400" },
+                { id: 2, title: "Magnetic Mobile Cooler Pro Max - RGB Edition", price: 850, oldPrice: 1500, image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400" },
+                { id: 3, title: "Solid Wood Premium Minimalist Computer Desk", price: 3400, oldPrice: 6000, image: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400" }
+            ]
+        };
+
+        // Initialize local copy from Storage
+        let SYSTEM_DB = JSON.parse(localStorage.getItem('daraz_live_db')) || DEFAULT_DATABASE;
+
+        // Render Platform Data into UI Layout
+        function renderLiveWebsite() {
+            // Render Banner
+            document.getElementById('ui-banner').src = SYSTEM_DB.banner;
+
+            // Render Categories
+            const catContainer = document.getElementById('ui-categories');
+            catContainer.innerHTML = SYSTEM_DB.categories.map(cat => `
+                <div class="hover:text-[#f85606] font-medium cursor-pointer p-2 rounded hover:bg-orange-50 transition flex justify-between items-center">
+                    <span>${cat}</span><i class="fas fa-chevron-right text-[9px] text-gray-400"></i>
+                </div>
+            `).join('');
+
+            // Render Products Catalog
+            const prodContainer = document.getElementById('ui-products');
+            prodContainer.innerHTML = SYSTEM_DB.products.map(p => `
+                <div class="bg-white p-2.5 rounded shadow-sm hover:shadow-md border border-gray-100 transition duration-200 cursor-pointer group flex flex-col justify-between">
+                    <div>
+                        <div class="h-36 w-full overflow-hidden bg-gray-50 rounded relative">
+                            <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy">
+                        </div>
+                        <h3 class="text-xs text-gray-800 font-normal mt-2.5 line-clamp-2 h-8 leading-4 group-hover:text-[#f85606] transition">${p.title}</h3>
+                    </div>
+                    <div class="mt-2">
+                        <div class="text-[#f85606] font-bold text-base">৳${p.price}</div>
+                        <div class="text-[11px] text-gray-400 line-through">৳${p.oldPrice}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Trigger Secret Admin Console Window
+        window.addEventListener('keydown', function(e) {
+            // Verification Shortcut Combo: Ctrl + Shift + A
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 65) {
+                e.preventDefault();
+                toggleAdminModal();
+            }
+        });
+
+        function toggleAdminModal() {
+            const modal = document.getElementById('secure-admin-panel');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                // Populate current live DB nodes into form elements inside control setup
+                document.getElementById('admin-banner-input').value = SYSTEM_DB.banner;
+                document.getElementById('admin-cat-input').value = SYSTEM_DB.categories.join(', ');
+                document.getElementById('admin-products-json').value = JSON.stringify(SYSTEM_DB.products, null, 2);
+            }
+        }
+
+        // Secure Authentication Processing Gateway
+        function verifySystemAdmin() {
+            const idInput = document.getElementById('auth-id').value;
+            const passInput = document.getElementById('auth-pass').value;
+
+            // Strict Payload Check
+            if (idInput === "236533" && passInput === "fahad236533") {
+                document.getElementById('admin-auth-layer').classList.add('hidden');
+                document.getElementById('admin-management-layer').classList.remove('hidden');
+            } else {
+                alert('🔴 Critical Security Error: Access Denied! Invalid Infrastructure Parameters.');
+            }
+        }
+
+        // Add Product via Form Shortcut Setup Helper
+        function addNewProductToEngine() {
+            try {
+                const title = document.getElementById('p-title').value;
+                const price = parseInt(document.getElementById('p-price').value);
+                const oldPrice = parseInt(document.getElementById('p-oldprice').value);
+                const image = document.getElementById('p-img').value;
+
+                if (!title || !price || !image) return alert('Please build complete product fields structure.');
+
+                const currentProducts = JSON.parse(document.getElementById('admin-products-json').value);
+                const newId = currentProducts.length ? currentProducts[currentProducts.length - 1].id + 1 : 1;
+
+                currentProducts.push({ id: newId, title, price, oldPrice, image });
+                document.getElementById('admin-products-json').value = JSON.stringify(currentProducts, null, 2);
+
+                // Clean form nodes
+                document.getElementById('p-title').value = '';
+                document.getElementById('p-price').value = '';
+                document.getElementById('p-oldprice').value = '';
+                document.getElementById('p-img').value = '';
+            } catch(e) {
+                alert('Error compilation object creation node array.');
+            }
+        }
+
+        // Commit and Inject Operations Database Changes 
+        function commitDatabaseChanges() {
+            try {
+                const updatedBanner = document.getElementById('admin-banner-input').value;
+                const updatedCats = document.getElementById('admin-cat-input').value.split(',').map(c => c.trim());
+                const updatedProducts = JSON.parse(document.getElementById('admin-products-json').value);
+
+                // Save State Configuration Data Map Object
+                SYSTEM_DB.banner = updatedBanner;
+                SYSTEM_DB.categories = updatedCats;
+                SYSTEM_DB.products = updatedProducts;
+
+                // Sync Core Engine to Browser Storage Layer
+                localStorage.setItem('daraz_live_db', JSON.stringify(SYSTEM_DB));
+                
+                renderLiveWebsite();
+                alert('🟢 Database Configuration Upgrades Deployed Successfully onto Production Ecosystem!');
+                toggleAdminModal();
+            } catch (err) {
+                alert('🔴 Master Validation Parse Schema Error: Check JSON structural formatting validity.');
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('auth-id').value = '';
+            document.getElementById('auth-pass').value = '';
+            document.getElementById('admin-management-layer').classList.add('hidden');
+            document.getElementById('admin-auth-layer').classList.remove('hidden');
+            toggleAdminModal();
+        }
+
+        // Initialize Runtime Web Shell App Interface Core
+        window.onload = renderLiveWebsite;
+    </script>
+</body>
+</html>
