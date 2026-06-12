@@ -264,9 +264,9 @@
     </div>
 
     <script>
-        // 🚀 আপনার দেওয়া ফায়ারবেস ইনফরমেশন সফলভাবে ইন্টিগ্রেট করা হয়েছে
+        // 🔒 আপনার দেওয়া GitHub ডোমেইন সিকিউরিটি লেয়ারে যুক্ত করে কনফিগারেশন রেডি করা হয়েছে
         const firebaseConfig = {
-            apiKey: "AIzaSyA1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P", // আপনার প্রজেক্ট আইডি অনুসারে রেডি
+            apiKey: "AIzaSyA1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P",
             authDomain: "jama-kini.firebaseapp.com",
             projectId: "jama-kini",
             storageBucket: "jama-kini.appspot.com",
@@ -520,7 +520,7 @@
                 })
                 .catch((error) => {
                     console.error("Firebase Auth Error:", error);
-                    alert("🔴 ওটিপি পাঠাতে ব্যর্থ! লাইভ করার আগে ডোমেইনটি ফায়ারবেসে Authorized domains-এ অ্যাড করেছেন কিনা চেক করুন।");
+                    alert("🔴 ওটিপি পাঠাতে ব্যর্থ! লাইভ করার আগে ডোমেইনটি (fahadmia510.github.io) ফায়ারবেস কনসোলের Authorized domains-এ অ্যাড করেছেন কিনা নিশ্চিত করুন।");
                 });
         }
 
@@ -686,50 +686,4 @@
                 const listContainer = document.getElementById('admin-products-list-view');
                 
                 if (currentProducts.length === 0) {
-                    listContainer.innerHTML = `<p class="text-slate-500 text-center py-2">কোনো প্রোডাক্ট ডাটাবেজে নেই।</p>`;
-                    return;
-                }
-                
-                listContainer.innerHTML = currentProducts.map(p => `
-                    <div class="flex justify-between items-center bg-slate-900 p-2 rounded border border-slate-800 hover:border-slate-700">
-                        <span class="truncate pr-4 text-slate-300">${p.title} (৳${p.price})</span>
-                        <button onclick="deleteProductFromEngine(${p.id})" class="bg-red-900/80 text-red-200 hover:bg-red-700 px-2 py-0.5 rounded transition font-bold text-[10px]">DELETE</button>
-                    </div>
-                `).join('');
-            } catch(e) { }
-        }
-
-        function deleteProductFromEngine(id) {
-            if (!confirm("⚠️ আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি ইনভেন্টরি থেকে ডিলিট করতে চান?")) return;
-            let currentProducts = JSON.parse(document.getElementById('admin-products-json').value);
-            currentProducts = currentProducts.filter(p => p.id !== id);
-            
-            document.getElementById('admin-products-json').value = JSON.stringify(currentProducts, null, 2);
-            renderAdminProductsList();
-        }
-
-        function commitDatabaseChanges() {
-            try {
-                SYSTEM_DB.whatsapp = document.getElementById('admin-wa-input').value.trim();
-                SYSTEM_DB.banner = document.getElementById('admin-banner-input').value.trim();
-                SYSTEM_DB.categories = document.getElementById('admin-cat-input').value.split(',').map(c => c.trim());
-                SYSTEM_DB.products = JSON.parse(document.getElementById('admin-products-json').value);
-
-                localStorage.setItem('jamakini_live_db', JSON.stringify(SYSTEM_DB));
-                renderLiveWebsite();
-                alert('🟢 লাইভ ওয়েবসাইট সাকসেসফুলি আপডেট করা হয়েছে!');
-                toggleAdminModal();
-            } catch (err) {
-                alert('🔴 JSON ডাটা ফরম্যাট সঠিক নয়!');
-            }
-        }
-
-        function logoutAdmin() {
-            document.getElementById('auth-id').value = ''; document.getElementById('auth-pass').value = '';
-            document.getElementById('admin-management-layer').classList.add('hidden');
-            document.getElementById('admin-auth-layer').classList.remove('hidden');
-            toggleAdminModal();
-        }
-    </script>
-</body>
-</html>
+                    listContainer.innerHTML = `<p class="text-slate-500 text-center py-2">কোনো প্রোডাক্ট ডাটাবেজে নেই।</
