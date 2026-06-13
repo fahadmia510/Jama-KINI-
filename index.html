@@ -147,9 +147,9 @@
                 <h3 class="text-xl font-black text-slate-800 mb-1 text-center uppercase tracking-wide">Account Login</h3>
                 <p class="text-xs text-slate-400 text-center mb-5 font-medium">জামা কিনি প্রোফাইলে লগইন করুন</p>
                 <div class="space-y-3.5">
-                    <input type="text" id="login-email" placeholder="ইমেইল বা মোবাইল নম্বর" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
+                    <input type="email" id="login-email" placeholder="আপনার রেজিস্টার্ড ইমেইল" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
                     <input type="password" id="login-pass" placeholder="পাসওয়ার্ড" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
-                    <button onclick="handleAuthSubmit('login')" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:brightness-105 text-white font-bold py-3 rounded-xl text-sm shadow-md transition active:scale-98 mt-2">কোড পাঠান (OTP)</button>
+                    <button onclick="handleFirebaseLogin()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:brightness-105 text-white font-bold py-3 rounded-xl text-sm shadow-md transition active:scale-98 mt-2">লগইন করুন</button>
                 </div>
                 <p class="text-xs text-center text-slate-500 mt-5 font-medium">নতুন ইউজার? <span onclick="openAuthModal('signup')" class="text-red-600 font-bold cursor-pointer hover:underline">নতুন অ্যাকাউন্ট খুলুন</span></p>
             </div>
@@ -159,21 +159,11 @@
                 <p class="text-xs text-slate-400 text-center mb-5 font-medium">সহজেই জামা কিনি-তে রেজিস্ট্রেশন করুন</p>
                 <div class="space-y-3.5">
                     <input type="text" id="reg-name" placeholder="আপনার সম্পূর্ণ নাম" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
-                    <input type="text" id="reg-phone" placeholder="ইমেইল বা মোবাইল নম্বর" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
-                    <input type="password" id="reg-pass" placeholder="নতুন পাসওয়ার্ড তৈরি করুন" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
-                    <button onclick="handleAuthSubmit('signup')" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-105 text-white font-bold py-3 rounded-xl text-sm shadow-md transition active:scale-98 mt-2">কোড পাঠান (OTP)</button>
+                    <input type="email" id="reg-email" placeholder="আপনার ইমেইল অ্যাড্রেস" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
+                    <input type="password" id="reg-pass" placeholder="নতুন পাসওয়ার্ড তৈরি করুন (কমপক্ষে ৬ ডিজিট)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:bg-white transition-all">
+                    <button onclick="handleFirebaseSignup()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-105 text-white font-bold py-3 rounded-xl text-sm shadow-md transition active:scale-98 mt-2">অ্যাকাউন্ট তৈরি করুন</button>
                 </div>
                 <p class="text-xs text-center text-slate-500 mt-5 font-medium">ইতিমধ্যে অ্যাকাউন্ট আছে? <span onclick="openAuthModal('login')" class="text-red-600 font-bold cursor-pointer hover:underline">লগইন করুন</span></p>
-            </div>
-
-            <div id="otp-form-layer" class="hidden">
-                <h3 class="text-xl font-black text-slate-800 mb-1 text-center uppercase tracking-wide">OTP Verification</h3>
-                <p class="text-xs text-slate-400 text-center mb-5 font-medium">অ্যাকাউন্ট ভেরিফাই করতে ৬-ডিজিটের কোডটি দিন</p>
-                <div class="space-y-3.5">
-                    <input type="text" id="otp-input" maxlength="6" placeholder="------" class="w-full border-2 border-slate-200 rounded-2xl px-4 py-3 text-center text-2xl font-black tracking-widest focus:outline-none focus:border-emerald-500 text-slate-800 bg-slate-50 shadow-inner">
-                    <button onclick="verifyOTPAndComplete()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-105 text-white font-bold py-3 rounded-xl text-sm shadow-md transition active:scale-98 mt-2">ভেরিফিকেশন সম্পন্ন করুন</button>
-                </div>
-                <p class="text-xs text-center text-slate-500 mt-5 font-medium"><span onclick="backToAuthForm()" class="text-red-600 font-bold cursor-pointer hover:underline">পিছনে যান</span></p>
             </div>
         </div>
     </div>
@@ -204,8 +194,6 @@
                     <button onclick="switchAdminTab('settings')" id="tab-btn-settings" class="px-4 py-2 bg-red-600 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition">Core Settings</button>
                     <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs uppercase tracking-wider transition">Order History (<span id="count-hist-orders">0</span>)</button>
                     <button onclick="switchAdminTab('supports')" id="tab-btn-supports" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs uppercase tracking-wider transition">Support Inbox (<span id="count-hist-supports">0</span>)</button>
-                    <button onclick="switchAdminTab('users')" id="tab-btn-users" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs uppercase tracking-wider transition">User Accounts (<span id="count-hist-users">0</span>)</button>
-                    <button onclick="switchAdminTab('otps')" id="tab-btn-otps" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs uppercase tracking-wider transition">OTP Activity Log (<span id="count-hist-otps">0</span>)</button>
                 </div>
 
                 <div id="sub-panel-settings" class="space-y-6">
@@ -250,22 +238,6 @@
                     <div id="log-supports-container" class="space-y-3 max-h-[50vh] overflow-y-auto pr-1"></div>
                 </div>
 
-                <div id="sub-panel-users" class="hidden space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-sm font-bold text-purple-400 uppercase tracking-wider"><i class="fas fa-users mr-1"></i> Registered User Accounts</h3>
-                        <button onclick="clearHistoryLog('users')" class="bg-rose-950/60 hover:bg-rose-900 text-rose-200 text-[11px] px-3 py-1.5 rounded-lg border border-rose-800/50 transition">Clear All Users</button>
-                    </div>
-                    <div id="log-users-container" class="space-y-3 max-h-[50vh] overflow-y-auto pr-1"></div>
-                </div>
-
-                <div id="sub-panel-otps" class="hidden space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-sm font-bold text-yellow-400 uppercase tracking-wider"><i class="fas fa-shield-alt mr-1"></i> Security OTP Log Stream</h3>
-                        <button onclick="clearHistoryLog('otps')" class="bg-rose-950/60 hover:bg-rose-900 text-rose-200 text-[11px] px-3 py-1.5 rounded-lg border border-rose-800/50 transition">Clear OTP Logs</button>
-                    </div>
-                    <div id="log-otps-container" class="space-y-2 max-h-[50vh] overflow-y-auto pr-1 font-mono text-xs"></div>
-                </div>
-
                 <div class="flex gap-4 border-t border-slate-800 pt-5">
                     <button onclick="commitDatabaseChanges()" class="flex-1 bg-gradient-to-r from-red-600 to-rose-600 hover:brightness-105 text-white font-black py-3.5 rounded-xl tracking-widest text-sm transition uppercase shadow-lg shadow-red-600/10 active:scale-98">Commit Changes</button>
                     <button onclick="logoutAdmin()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-6 rounded-xl text-sm transition active:scale-98">Lock System</button>
@@ -273,6 +245,93 @@
             </div>
         </div>
     </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC_Y_556B_O9NeryYqTG8vneLJxN20tbIQ",
+            authDomain: "jama-kini-f5168.firebaseapp.com",
+            projectId: "jama-kini-f5168",
+            storageBucket: "jama-kini-f5168.firebasestorage.app",
+            messagingSenderId: "777975803542",
+            appId: "1:777975803542:web:2152ee34122c5fb8299cb7",
+            measurementId: "G-QTCM5MPGT1"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Global functions mapped to window scope for HTML onclick buttons access
+        window.handleFirebaseSignup = async function() {
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-pass').value;
+
+            if(!name || !email || !password) {
+                alert('🔴 দয়া করে সব ঘর পূরণ করুন!');
+                return;
+            }
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await updateProfile(userCredential.user, { displayName: name });
+                alert(`🎉 অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!\nস্বাগতম, ${name}`);
+                closeAuthModal();
+            } catch (error) {
+                alert('🔴 ইরর: ' + error.message);
+            }
+        }
+
+        window.handleFirebaseLogin = async function() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-pass').value;
+
+            if(!email || !password) {
+                alert('🔴 ইমেইল এবং পাসওয়ার্ড সঠিকভাবে দিন!');
+                return;
+            }
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                alert(`🎉 সফলভাবে লগইন হয়েছে!\nস্বাগতম, ${userCredential.user.displayName || 'ইউজার'}`);
+                closeAuthModal();
+            } catch (error) {
+                alert('🔴 লগইন ব্যর্থ হয়েছে: ইমেইল/পাসওয়ার্ড ভুল অথবা অ্যাকাউন্ট নেই।');
+            }
+        }
+
+        window.handleFirebaseLogout = async function() {
+            try {
+                await signOut(auth);
+                alert('Logged Out Successfully');
+                window.location.reload();
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        // Monitoring Active User Session Node
+        onAuthStateChanged(auth, (user) => {
+            const navUserStatus = document.getElementById('nav-user-status');
+            if (user) {
+                navUserStatus.innerHTML = `
+                    <div class="font-bold flex items-center gap-1.5 text-yellow-300 drop-shadow-sm">
+                        <i class="fas fa-user-check"></i> ${(user.displayName || 'ইউজার').substring(0, 10)}...
+                    </div>
+                    <div onclick="handleFirebaseLogout()" class="cursor-pointer text-xs text-slate-200 hover:underline">Logout</div>
+                `;
+            } else {
+                navUserStatus.innerHTML = `
+                    <div onclick="openAuthModal('login')" class="cursor-pointer hover:text-yellow-200 transition-colors flex items-center gap-1.5"><i class="fas fa-user-circle text-lg opacity-90"></i> Login</div>
+                    <div onclick="openAuthModal('signup')" class="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-lg border border-white/20 transition-all shadow-sm active:scale-95">Sign Up</div>
+                `;
+            }
+        });
+    </script>
 
     <script>
         const DEFAULT_DATABASE = {
@@ -287,15 +346,10 @@
         };
 
         let SYSTEM_DB = JSON.parse(localStorage.getItem('jamakini_live_db')) || DEFAULT_DATABASE;
-        
         let HISTORY_ORDERS = JSON.parse(localStorage.getItem('jamakini_hist_orders')) || [];
         let HISTORY_SUPPORTS = JSON.parse(localStorage.getItem('jamakini_hist_supports')) || [];
-        let HISTORY_OTPS = JSON.parse(localStorage.getItem('jamakini_hist_otps')) || [];
-        let REGISTERED_USERS = JSON.parse(localStorage.getItem('jamakini_reg_users')) || [];
 
         let selectedProduct = null;
-        let generatedOTP = null;
-        let authSessionData = null;
 
         function renderLiveWebsite(filteredProducts = null) {
             document.getElementById('ui-banner').src = SYSTEM_DB.banner;
@@ -398,12 +452,9 @@
             closeProductModal();
         }
 
-        function openSupportModal() {
-            document.getElementById('support-modal').classList.remove('hidden');
-        }
-        function closeSupportModal() {
-            document.getElementById('support-modal').classList.add('hidden');
-        }
+        function openSupportModal() { document.getElementById('support-modal').classList.remove('hidden'); }
+        function closeSupportModal() { document.getElementById('support-modal').classList.add('hidden'); }
+        
         function sendSupportMessage() {
             const sName = document.getElementById('support-name').value.trim();
             const sMsg = document.getElementById('support-msg').value.trim();
@@ -413,19 +464,12 @@
                 return;
             }
 
-            const newSupportRecord = {
-                timestamp: new Date().toLocaleString('bn-BD'),
-                userName: sName,
-                message: sMsg
-            };
+            const newSupportRecord = { timestamp: new Date().toLocaleString('bn-BD'), userName: sName, message: sMsg };
             HISTORY_SUPPORTS.unshift(newSupportRecord);
             localStorage.setItem('jamakini_hist_supports', JSON.stringify(HISTORY_SUPPORTS));
             updateHistoryTabBadges();
 
-            const supportPayload = `🆘 *হেল্প ও সাপোর্ট প্রয়োজন (Jama KINI)*\n\n` +
-                                   `👤 *ইউজারের নাম:* ${sName}\n` +
-                                   `💬 *সমস্যা:* ${sMsg}`;
-
+            const supportPayload = `🆘 *হেল্প ও সাপোর্ট প্রয়োজন (Jama KINI)*\n\n👤 *ইউজারের নাম:* ${sName}\n💬 *সমস্যা:* ${sMsg}`;
             window.open(`https://api.whatsapp.com/send?phone=${SYSTEM_DB.whatsapp}&text=${encodeURIComponent(supportPayload)}`, '_blank');
             closeSupportModal();
             document.getElementById('support-name').value = '';
@@ -434,9 +478,6 @@
 
         function openAuthModal(mode) {
             document.getElementById('auth-modal').classList.remove('hidden');
-            document.getElementById('otp-form-layer').classList.add('hidden');
-            authSessionData = { currentMode: mode };
-
             if(mode === 'login') {
                 document.getElementById('login-form-layer').classList.remove('hidden');
                 document.getElementById('signup-form-layer').classList.add('hidden');
@@ -445,101 +486,7 @@
                 document.getElementById('signup-form-layer').classList.remove('hidden');
             }
         }
-
-        function closeAuthModal() {
-            document.getElementById('auth-modal').classList.add('hidden');
-            generatedOTP = null;
-        }
-
-        function backToAuthForm() {
-            if(authSessionData && authSessionData.currentMode) {
-                openAuthModal(authSessionData.currentMode);
-            }
-        }
-
-        function handleAuthSubmit(type) {
-            let targetDestination = "";
-            let namePlaceholder = "";
-            let passwordPlaceholder = "";
-
-            if(type === 'login') {
-                targetDestination = document.getElementById('login-email').value.trim();
-                passwordPlaceholder = document.getElementById('login-pass').value;
-                if(!targetDestination || !passwordPlaceholder) return alert('সব তথ্য দিন!');
-                
-                const userExists = REGISTERED_USERS.find(u => u.account === targetDestination && u.password === passwordPlaceholder);
-                if(!userExists) {
-                    return alert('🔴 ভুল ইমেইল/মোবাইল বা পাসওয়ার্ড দিয়েছেন অথবা অ্যাকাউন্টটি রেজিস্টার্ড নয়!');
-                }
-                authSessionData.displayUser = userExists.name;
-            } else {
-                namePlaceholder = document.getElementById('reg-name').value.trim();
-                targetDestination = document.getElementById('reg-phone').value.trim();
-                passwordPlaceholder = document.getElementById('reg-pass').value;
-                if(!namePlaceholder || !targetDestination || !passwordPlaceholder) return alert('সব তথ্য পূরণ করুন!');
-                
-                const userAlreadyRegistered = REGISTERED_USERS.find(u => u.account === targetDestination);
-                if(userAlreadyRegistered) {
-                    return alert('⚠️ এই ইমেইল বা মোবাইল নম্বরটি দিয়ে ইতিপূর্বে অ্যাকাউন্ট খোলা হয়েছে!');
-                }
-
-                authSessionData.displayUser = namePlaceholder;
-                authSessionData.targetAccount = targetDestination;
-                authSessionData.password = passwordPlaceholder;
-            }
-
-            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            const newOtpLog = {
-                timestamp: new Date().toLocaleString('bn-BD'),
-                account: targetDestination,
-                actionType: type.toUpperCase(),
-                otpCode: generatedOTP
-            };
-            HISTORY_OTPS.unshift(newOtpLog);
-            localStorage.setItem('jamakini_hist_otps', JSON.stringify(HISTORY_OTPS));
-            updateHistoryTabBadges();
-
-            console.log(`[Jama KINI Secure Node] Verification Code Sent to ${targetDestination} -> ${generatedOTP}`);
-            alert(`📩 আপনার (${targetDestination}) নাম্বারে/ইমেইলে একটি ভেরিফিকেশন কোড পাঠানো হয়েছে!\n\n🔐 ভেরিফিকেশন কোড (OTP): ${generatedOTP}`);
-
-            document.getElementById('login-form-layer').classList.add('hidden');
-            document.getElementById('signup-form-layer').classList.add('hidden');
-            document.getElementById('otp-form-layer').classList.remove('hidden');
-            document.getElementById('otp-input').value = '';
-            document.getElementById('otp-input').focus();
-        }
-
-        function verifyOTPAndComplete() {
-            const enteredOTP = document.getElementById('otp-input').value.trim();
-
-            if(enteredOTP === generatedOTP) {
-                if(authSessionData.currentMode === 'signup') {
-                    const newUser = {
-                        timestamp: new Date().toLocaleString('bn-BD'),
-                        name: authSessionData.displayUser,
-                        account: authSessionData.targetAccount,
-                        password: authSessionData.password,
-                        status: "Verified"
-                    };
-                    REGISTERED_USERS.unshift(newUser);
-                    localStorage.setItem('jamakini_reg_users', JSON.stringify(REGISTERED_USERS));
-                    updateHistoryTabBadges();
-                }
-
-                alert(`🎉 সফলভাবে ভেরিফিকেশন সম্পন্ন হয়েছে!\nস্বাগতম, ${authSessionData.displayUser}`);
-                
-                document.getElementById('nav-user-status').innerHTML = `
-                    <div class="font-bold flex items-center gap-1.5 text-yellow-300 drop-shadow-sm">
-                        <i class="fas fa-user-check"></i> ${authSessionData.displayUser.substring(0, 10)}...
-                    </div>
-                    <div onclick="window.location.reload()" class="cursor-pointer text-xs text-slate-200 hover:underline">Logout</div>
-                `;
-                closeAuthModal();
-            } else {
-                alert('🔴 ভুল কোড দিয়েছেন! দয়া করে সঠিক ওটিপি (OTP) কোডটি লিখুন।');
-            }
-        }
+        function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
 
         window.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.shiftKey && e.keyCode === 65) { 
@@ -556,7 +503,6 @@
                 document.getElementById('admin-banner-input').value = SYSTEM_DB.banner;
                 document.getElementById('admin-cat-input').value = SYSTEM_DB.categories.join(', ');
                 document.getElementById('admin-products-json').value = JSON.stringify(SYSTEM_DB.products, null, 2);
-                
                 switchAdminTab('settings');
                 updateHistoryTabBadges();
             }
@@ -567,40 +513,30 @@
                 document.getElementById('admin-auth-layer').classList.add('hidden');
                 document.getElementById('admin-management-layer').classList.remove('hidden');
                 switchAdminTab('settings');
-            } else {
-                alert('🔴 Access Denied: Invalid Security Key Node!');
-            }
+            } else { alert('🔴 Access Denied: Invalid Security Key Node!'); }
         }
 
         function switchAdminTab(tabName) {
-            const tabs = ['settings', 'orders', 'supports', 'users', 'otps'];
+            const tabs = ['settings', 'orders', 'supports'];
             tabs.forEach(t => {
                 document.getElementById(`sub-panel-${t}`).classList.add('hidden');
                 document.getElementById(`tab-btn-${t}`).className = "px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold text-xs uppercase tracking-wider transition";
             });
-
             document.getElementById(`sub-panel-${tabName}`).classList.remove('hidden');
             document.getElementById(`tab-btn-${tabName}`).className = "px-4 py-2 bg-red-600 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition shadow-md shadow-red-600/10";
 
             if (tabName === 'orders') renderOrderHistoryLogs();
             if (tabName === 'supports') renderSupportHistoryLogs();
-            if (tabName === 'users') renderUserListLogs();
-            if (tabName === 'otps') renderOtpHistoryLogs();
         }
 
         function updateHistoryTabBadges() {
             document.getElementById('count-hist-orders').innerText = HISTORY_ORDERS.length;
             document.getElementById('count-hist-supports').innerText = HISTORY_SUPPORTS.length;
-            document.getElementById('count-hist-users').innerText = REGISTERED_USERS.length;
-            document.getElementById('count-hist-otps').innerText = HISTORY_OTPS.length;
         }
 
         function renderOrderHistoryLogs() {
             const container = document.getElementById('log-orders-container');
-            if (HISTORY_ORDERS.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-500 py-6 text-center font-medium">এখনো কোনো অর্ডার ডাটা ইতিহাস তৈরি হয়নি।</p>`;
-                return;
-            }
+            if (HISTORY_ORDERS.length === 0) { container.innerHTML = `<p class="text-xs text-slate-500 py-6 text-center font-medium">এখনো কোনো অর্ডার ডাটা ইতিহাস তৈরি হয়নি।</p>`; return; }
             container.innerHTML = HISTORY_ORDERS.map((o) => `
                 <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-xs space-y-1 relative group shadow-inner">
                     <span class="absolute top-4 right-4 text-[10px] text-slate-500 font-mono bg-slate-900 px-2 py-0.5 rounded border border-slate-800">${o.timestamp}</span>
@@ -617,10 +553,7 @@
 
         function renderSupportHistoryLogs() {
             const container = document.getElementById('log-supports-container');
-            if (HISTORY_SUPPORTS.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-500 py-6 text-center font-medium">ইনবক্স বর্তমানে সম্পূর্ণ খালি রয়েছে।</p>`;
-                return;
-            }
+            if (HISTORY_SUPPORTS.length === 0) { container.innerHTML = `<p class="text-xs text-slate-500 py-6 text-center font-medium">ইনবক্স বর্তমানে সম্পূর্ণ খালি রয়েছে।</p>`; return; }
             container.innerHTML = HISTORY_SUPPORTS.map((s) => `
                 <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-xs space-y-2 relative shadow-inner">
                     <span class="absolute top-4 right-4 text-[10px] text-slate-500 font-mono bg-slate-900 px-2 py-0.5 rounded border border-slate-800">${s.timestamp}</span>
@@ -630,51 +563,10 @@
             `).join('');
         }
 
-        function renderUserListLogs() {
-            const container = document.getElementById('log-users-container');
-            if (REGISTERED_USERS.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-500 py-6 text-center font-medium">কোনো রেজিস্টার্ড ইউজার পাওয়া যায়নি।</p>`;
-                return;
-            }
-            container.innerHTML = REGISTERED_USERS.map((u) => `
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-xs space-y-1 relative shadow-inner flex justify-between items-center gap-4">
-                    <div>
-                        <div class="text-purple-400 font-bold text-sm flex items-center gap-1.5"><i class="fas fa-user-circle"></i> ${u.name}</div>
-                        <div class="text-slate-400 mt-1">লগইন আইডি: <span class="text-white font-mono font-medium">${u.account}</span></div>
-                        <div class="text-slate-400">পাসওয়ার্ড: <span class="text-slate-300 font-mono">${u.password}</span></div>
-                        <div class="text-[10px] text-slate-500 mt-1 font-mono">রেজিস্ট্রেশন টাইম: ${u.timestamp}</div>
-                    </div>
-                    <div class="bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 text-[11px] px-3 py-1 rounded-xl font-bold shrink-0">
-                        <i class="fas fa-check-circle mr-1"></i> ${u.status}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderOtpHistoryLogs() {
-            const container = document.getElementById('log-otps-container');
-            if (HISTORY_OTPS.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-500 py-6 text-center font-sans font-medium">কোনo সিকিউরিটি ওটিপি ট্র্যাকিং লগ পাওয়া যায়নি।</p>`;
-                return;
-            }
-            container.innerHTML = HISTORY_OTPS.map((log) => `
-                <div class="bg-slate-950 border border-slate-850 px-4 py-3 rounded-xl flex justify-between items-center text-[11px] shadow-inner gap-4">
-                    <div class="leading-relaxed">
-                        <span class="text-slate-600 font-mono">[${log.timestamp}]</span> 
-                        <span class="text-yellow-500 font-bold bg-yellow-500/10 px-1.5 py-0.5 rounded border border-yellow-500/10 text-[10px] uppercase">${log.actionType}</span> Request from 
-                        <span class="text-slate-300 font-medium">${log.account}</span>
-                    </div>
-                    <div class="bg-emerald-950/60 text-emerald-400 px-3 py-1 rounded-lg border border-emerald-800/60 font-black tracking-wider shadow-sm shrink-0">OTP: ${log.otpCode}</div>
-                </div>
-            `).join('');
-        }
-
         function clearHistoryLog(type) {
             if (!confirm(`⚠️ আপনি কি নিশ্চিতভাবে সমস্ত ${type} হিস্ট্রি চিরতরে মুছে ফেলতে চান?`)) return;
             if (type === 'orders') { HISTORY_ORDERS = []; localStorage.removeItem('jamakini_hist_orders'); renderOrderHistoryLogs(); }
             if (type === 'supports') { HISTORY_SUPPORTS = []; localStorage.removeItem('jamakini_hist_supports'); renderSupportHistoryLogs(); }
-            if (type === 'users') { REGISTERED_USERS = []; localStorage.removeItem('jamakini_reg_users'); renderUserListLogs(); }
-            if (type === 'otps') { HISTORY_OTPS = []; localStorage.removeItem('jamakini_hist_otps'); renderOtpHistoryLogs(); }
             updateHistoryTabBadges();
         }
 
@@ -687,7 +579,6 @@
             if (!title || !price || !image) return alert('সবগুলো ঘর পূরণ করুন!');
             const arr = JSON.parse(document.getElementById('admin-products-json').value);
             arr.push({ id: arr.length ? arr[arr.length - 1].id + 1 : 1, title, price, oldPrice, image });
-            
             document.getElementById('admin-products-json').value = JSON.stringify(arr, null, 2);
             document.getElementById('p-title').value = ''; document.getElementById('p-price').value = '';
             document.getElementById('p-oldprice').value = ''; document.getElementById('p-img').value = '';
@@ -699,14 +590,11 @@
                 SYSTEM_DB.banner = document.getElementById('admin-banner-input').value.trim();
                 SYSTEM_DB.categories = document.getElementById('admin-cat-input').value.split(',').map(c => c.trim());
                 SYSTEM_DB.products = JSON.parse(document.getElementById('admin-products-json').value);
-
                 localStorage.setItem('jamakini_live_db', JSON.stringify(SYSTEM_DB));
                 renderLiveWebsite();
                 alert('🟢 লাইভ ওয়েবসাইট সাকসেসফুলি আপডেট করা হয়েছে!');
                 toggleAdminModal();
-            } catch (err) {
-                alert('🔴 JSON ডাটা ফরম্যাট সঠিক নয়!');
-            }
+            } catch (err) { alert('🔴 JSON ডাটা ফরম্যাট সঠিক নয়!'); }
         }
 
         function logoutAdmin() {
