@@ -17,7 +17,7 @@
         .product-card-shadow:hover { box-shadow: 0 20px 25px -5px rgba(223, 32, 32, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
         
         /* Glassmorphism Classes */
-        .glass-dark { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-dark { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .glass-light { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.05); }
 
         @keyframes fb-bounce {
@@ -42,8 +42,8 @@
             <span onclick="openSupportModal()" class="hover:text-red-400 cursor-pointer transition-colors flex items-center gap-1.5"><i class="fab fa-whatsapp text-emerald-400 text-sm"></i> Help & Support</span>
             <a href="https://www.facebook.com/people/JAMA-KINI/61590983215803/" target="_blank" class="hover:text-blue-400 transition-colors flex items-center gap-1.5"><i class="fab fa-facebook text-blue-500 text-sm"></i> Facebook Page</a>
             
-            <div id="web3-wallet-zone" onclick="connectWeb3Wallet()" class="hidden sm:flex items-center gap-1.5 cursor-pointer bg-amber-500/10 hover:bg-amber-500/20 text-yellow-400 px-2.5 py-0.5 rounded-full border border-amber-500/30 transition-all active:scale-95">
-                <i class="fas fa-wallet text-xs"></i> <span id="wallet-status-text">Connect Wallet</span>
+            <div id="crypto-wallet-view-zone" class="hidden sm:flex items-center gap-1.5 bg-slate-800 text-yellow-400 px-3 py-0.5 rounded-full border border-slate-700 font-mono text-[11px]">
+                <i class="fas fa-coins text-[10px] text-amber-400"></i> <span id="wallet-display-text">Wallet: Loading...</span>
             </div>
         </div>
         
@@ -268,9 +268,15 @@
                 </div>
 
                 <div id="sub-panel-settings" class="space-y-6">
-                    <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 shadow-inner">
-                        <h3 class="text-sm font-bold text-yellow-400 mb-3 uppercase tracking-wider flex items-center gap-1.5"><i class="fab fa-whatsapp"></i> Order Receive WhatsApp Number</h3>
-                        <input type="text" id="admin-wa-input" placeholder="Example: 88017XXXXXXXX" class="w-full bg-slate-950 border border-slate-800 px-4 py-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-red-500 font-mono">
+                    <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 shadow-inner grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h3 class="text-sm font-bold text-yellow-400 mb-3 uppercase tracking-wider flex items-center gap-1.5"><i class="fab fa-whatsapp"></i> Order Receive WhatsApp Number</h3>
+                            <input type="text" id="admin-wa-input" placeholder="Example: 88017XXXXXXXX" class="w-full bg-slate-950 border border-slate-800 px-4 py-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-red-500 font-mono">
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-amber-400 mb-3 uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-wallet"></i> Business Crypto Wallet ID / Currency</h3>
+                            <input type="text" id="admin-crypto-input" placeholder="Example: USDT (TRC20): TLx..." class="w-full bg-slate-950 border border-slate-800 px-4 py-2.5 rounded-xl text-sm text-white focus:outline-none focus:border-red-500 font-mono">
+                        </div>
                     </div>
                     <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 shadow-inner">
                         <h3 class="text-sm font-bold text-rose-400 mb-3 uppercase tracking-wider flex items-center gap-1.5"><i class="fas fa-image"></i> Main Banner Upload / ব্যানার ছবি আপলোড করুন</h3>
@@ -427,6 +433,7 @@
     <script>
         const DEFAULT_DATABASE = {
             whatsapp: "8801941063121", 
+            cryptoWallet: "USDT (TRC20): TXXXXX...", // ডিফল্ট ওয়ালেট এড্রেস ডাটা নোড
             banner: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200",
             categories: ["Mens Fashion", "Womens Clothing", "Gadgets & Electronics", "Exclusive Panjabi", "T-Shirts & Polos", "Home Decor", "Watches & Belts"],
             products: [
@@ -518,21 +525,15 @@
             }, 1200);
         }
 
-        // Web3 Crypto Wallet Simulation Connect Feature
-        function connectWeb3Wallet() {
-            const btn = document.getElementById('web3-wallet-zone');
-            const txt = document.getElementById('wallet-status-text');
-            
-            triggerSecurityScanner(() => {
-                txt.innerText = "0x7F...F4AD Connected";
-                btn.className = "flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full border border-emerald-500/30 transition-all pointer-events-none";
-                alert("🌐 Web3 Ledger Node Authorized!\nCrypto Wallet integration has initialized successfully.");
-            });
-        }
-
         // Render Application Structure
         function renderLiveWebsite(filteredProducts = null) {
             document.getElementById('ui-banner').src = SYSTEM_DB.banner;
+            
+            // ওয়ালেট টেক্সট লাইভ লোড করা
+            const walletTxt = document.getElementById('wallet-display-text');
+            if(walletTxt) {
+                walletTxt.innerText = SYSTEM_DB.cryptoWallet || "No Wallet Listed";
+            }
 
             const catContainer = document.getElementById('ui-categories');
             let categoryHtml = `
@@ -732,6 +733,7 @@
             modal.classList.toggle('hidden');
             if (!modal.classList.contains('hidden')) {
                 document.getElementById('admin-wa-input').value = SYSTEM_DB.whatsapp || "8801941063121";
+                document.getElementById('admin-crypto-input').value = SYSTEM_DB.cryptoWallet || "USDT (TRC20): TXXXXX...";
                 document.getElementById('admin-products-json').value = JSON.stringify(SYSTEM_DB.products, null, 2);
                 switchAdminTab('settings');
                 updateHistoryTabBadges();
@@ -880,6 +882,7 @@
         async function commitDatabaseChanges() {
             try {
                 SYSTEM_DB.whatsapp = document.getElementById('admin-wa-input').value.trim();
+                SYSTEM_DB.cryptoWallet = document.getElementById('admin-crypto-input').value.trim(); // ওয়ালেট সেভ লজিক
                 
                 const bannerFile = document.getElementById('admin-banner-file').files[0];
                 if (bannerFile) {
@@ -963,7 +966,6 @@
         window.addNewCategoryInline = addNewCategoryInline;
         window.togglePremiumThemeMode = togglePremiumThemeMode;
         window.handleSmartAISearch = handleSmartAISearch;
-        window.connectWeb3Wallet = connectWeb3Wallet;
 
         // Document Body Event Listener for Outside Clicks
         document.addEventListener('click', function(e) {
@@ -976,9 +978,9 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             renderLiveWebsite();
-            // Automatically make crypto zone active and visible in the DOM
-            const cryptoZone = document.getElementById('web3-wallet-zone');
-            if (cryptoZone) cryptoZone.classList.remove('hidden');
+            // ওয়ালেট ভিউ জোন সক্রিয় এবং ভিজিবল করা
+            const walletViewZone = document.getElementById('crypto-wallet-view-zone');
+            if (walletViewZone) walletViewZone.classList.remove('hidden');
         });
     </script>
 </body>
